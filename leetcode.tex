@@ -1,0 +1,168 @@
+\documentclass [a4paper,UTF8, oneside]{book}
+\usepackage{geometry}
+\geometry{legalpaper, left=0.5in, right=0.5in, top=0.5in, bottom=0.5in}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{epigraph}
+\usepackage{amsfonts,amsthm,bm}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{upgreek}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{microtype}
+\usepackage{marvosym}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+\tcbset{
+  boxrule=1mm,
+  coltitle=black,
+  colframe=blue!45!white,
+  colback=blue!15!white,
+  width=0.9\linewidth,
+  title=More General Form
+}
+\usepackage{soul}
+\usepackage{dashrule}
+\usepackage[nodayofweek,level]{datetime}
+% no paragraph indent
+\setlength\parindent{0pt}
+% spacing between the number and the title
+\usepackage{tocloft}
+\renewcommand{\cftchapnumwidth}{2em}
+\renewcommand{\cftsecnumwidth}{3em}
+\renewcommand{\cftsubsecnumwidth}{4em}
+\renewcommand{\cftsubsubsecnumwidth}{5em}
+
+% section index depth
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+% code listing settings
+\usepackage{listings}
+\lstset{
+	language=C++,
+	backgroundcolor=\color[rgb]{0.1176, 0.1176, 0.1176},  
+	keywordstyle=\color[rgb]{0.4, 0.6078, 0.8196},
+	commentstyle=\color[rgb]{0.4549, 0.5922,0.4863},
+	stringstyle=\color[rgb]{0.7725, 0.57647, 0.48627},
+	basicstyle=\ttfamily\small\color[rgb]{0.8314, 0.8314, 0.8314},
+	%	aboveskip={1.0\baselineskip},
+	%	belowskip={1.0\baselineskip},
+	columns=fixed,
+	extendedchars=true,
+	breaklines=true,
+	tabsize=2,
+	prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	frame=lines,
+	showtabs=false,
+	showspaces=false,
+	showstringspaces=false,
+  keepspaces=true,
+	numbers=none,
+	numberstyle=\small\color{WildStrawberry},
+	stepnumber=1,
+	numbersep=5pt,
+	captionpos=t,
+	escapeinside={\%*}{*)}
+}
+
+\definecolor{H1}{rgb}{0.02745098, 0.22745098, 0.96078431}
+\definecolor{H2}{rgb}{0.24313725, 0.56078431, 0.56862745}
+\definecolor{H3}{rgb}{0.24705882, 0.58823529, 0.96862745}
+\definecolor{CodeBackground}{rgb}{0.1176, 0.1176, 0.1176}
+
+%------------------------Partial Compilation---------------------------------------------------------------------------
+% data structure
+%\includeonly{ch_array}
+%\includeonly{ch_string}
+%\includeonly{ch_linked_list}
+%\includeonly{ch_stack}
+%\includeonly{ch_queue}
+%\includeonly{ch_tree}
+%\includeonly{ch_graph}
+%\includeonly{ch_matrix}
+
+% strategy
+%\includeonly{ch_dp}
+%\includeonly{ch_greedy}
+%\includeonly{ch_backtracking}
+%\includeonly{ch_binary_search}
+
+% miscellany
+%\includeonly{ch_math}
+%\includeonly{ch_bit_manipulation}
+%\includeonly{ch_classic_algorithms}
+%\includeonly{ch_recursion}
+%\includeonly{ch_minor_tags}
+
+% code snippet
+%\includeonly{ch_boilerplate_stl}
+%\includeonly{ch_boilerplate_tree}
+%\includeonly{ch_boilerplate_graph}
+%\includeonly{ch_boilerplate_sorting}
+%includeonly{ch_boilerplate_bit_manipulation}
+
+% archive
+%\includeonly{ch_archive}
+%---------------------------------------------------------------------------------------------------------------------
+
+%\includeonly{
+%ch_string,
+%ch_linked_list,
+%ch_boilerplate_stl,
+%}
+
+\begin{document}
+%------------------------Cover----------------------------------------------------------------------------------------
+\begin{titlepage}
+\begin{center}
+\vspace*{\fill} % Fill the upper part of the page with whitespace
+{\scshape\LARGE LeetCode Solution (C++) \par}
+\vspace{2cm}
+{\Large\itshape Xuefei Jiang \par}
+\vspace*{\fill} % Fill the remaining part of the page with whitespace
+\rightline{\Large {\color{Gray}Last update: \today} \par}
+\end{center}
+\end{titlepage}
+%---------------------------------------------------------------------------------------------------------------------
+
+\tableofcontents
+\addcontentsline{toc}{chapter}{Table of Contents}
+\setcounter{tocdepth}{3}
+
+\part{Data Structure}
+\include{ch_array}
+\include{ch_string}
+\include{ch_linked_list}
+\include{ch_stack}
+\include{ch_queue}
+\include{ch_tree}
+\include{ch_graph}
+\include{ch_matrix}
+
+\part{Strategy}
+\include{ch_dp}
+\include{ch_greedy}
+\include{ch_backtracking}
+\include{ch_binary_search}
+
+\part{Miscellany}
+\include{ch_math}
+\include{ch_bit_manipulation}
+\include{ch_classic_algorithms}
+\include{ch_recursion}
+\include{ch_minor_tags}
+
+\part{Code Snippet}
+\include{ch_boilerplate_stl}
+\include{ch_boilerplate_tree}
+\include{ch_boilerplate_graph}
+\include{ch_boilerplate_sorting}
+\include{ch_boilerplate_bit_manipulation}
+
+% archive
+%\include{ch_archive}
+
+\end{document}

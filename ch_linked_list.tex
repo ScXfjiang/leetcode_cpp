@@ -1,0 +1,620 @@
+\chapter{Linked List}
+\section{Thinking in Singly Linked Lists}
+\subsection{Head and Tail Pointers}
+In a {\color{blue}{singly linked list}}, the {\color{blue}{head}} pointer points to the {\color{blue}{first node}}, and the {\color{blue}{tail}} pointer points to the {\color{blue}{last node}}. \\
+
+{\color{blue}{A singly linked list is empty}} $\Leftrightarrow$ {\colorbox{CodeBackground}{\lstinline|head == nullptr|}} and {\colorbox{CodeBackground}{\lstinline|tail == nullptr|}}.
+
+\subsection{Dummy Head}
+In scenarios where the {\color{blue}{first node}} requires different handling than the rest (e.g., {\color{blue}{insertion}}, {\color{blue}{deletion}}, some {\color{blue}{rearranging operations}}), a {\color{blue}{dummy head}} helps in treating all nodes uniformly.\\
+
+{\color{blue}{A singly linked list with the dummy head is empty}} $\Leftrightarrow$ {\colorbox{CodeBackground}{\lstinline|dummy_head = new Node();|}} and {\colorbox{CodeBackground}{\lstinline|tail == nullptr|}}.
+
+\subsection{Practical Tips}
+\begin{itemize}
+	\item To {\color{blue}{insert}} or {\color{blue}{remove}} a node from a linked list, you first need to {\color{blue}{locate the node immediately preceding the target node}}.
+	\item The meaning of the {\colorbox{CodeBackground}{\lstinline|curr|}} node varies with the context. During {\color{blue}{traversal}}, {\colorbox{CodeBackground}{\lstinline|curr|}} refers to the {\color{blue}{node currently under examination}}. However, in operations like {\color{blue}{insertion}} or {\color{blue}{deletion}}, {\colorbox{CodeBackground}{\lstinline|curr|}} refers to the {\color{blue}{node immediately preceding the target node}}, which is also the node whose {\colorbox{CodeBackground}{\lstinline|next|}} pointer is going to be modified.
+\end{itemize}
+
+\subsection{Code Snippet}
+\hdashrule[0.5ex]{\linewidth}{0.5pt}{1mm 3pt}
+Unless specified, {\color{blue}{nodes}} of {\color{blue}{singly linked list}} are defined as follows:
+\begin{lstlisting}
+struct ListNode {
+	ListNode() : val(0), next(nullptr) {}
+	ListNode(int x) : val(x), next(nullptr) {}
+	ListNode(int x, ListNode* next) : val(x), next(next) {}
+	
+	int val;
+	ListNode* next;
+};
+\end{lstlisting}
+\hdashrule[0.5ex]{\linewidth}{0.5pt}{1mm 3pt}
+
+\subsubsection*{Insert {\colorbox{CodeBackground}{\lstinline|y|}} After {\colorbox{CodeBackground}{\lstinline|x|}}: {\colorbox{CodeBackground}{\lstinline|[x -> z] --> [x -> y -> z]|}}}
+\begin{lstlisting}
+void insert(ListNode* x, ListNode* y) {
+	y->next = x->next;
+	x->next = y;
+}
+\end{lstlisting}
+
+\subsubsection*{Delete {\colorbox{CodeBackground}{\lstinline|y|}} After {\colorbox{CodeBackground}{\lstinline|x|}}: {\colorbox{CodeBackground}{\lstinline|[x -> y -> z] --> [x -> z]|}}}
+\begin{lstlisting}
+void delete_node(ListNode* x, ListNode* y) {
+	x->next = y->next;
+	delete y;
+}
+\end{lstlisting}
+
+\subsubsection*{Traverse the List}
+\begin{lstlisting}
+void traverse(ListNode* head) {
+	ListNode* curr = head;
+	while (curr) {
+		// do something
+		curr = curr->next;
+	}
+}
+\end{lstlisting}
+
+\subsubsection*{Search For a Node}
+\begin{lstlisting}
+ListNode* find(ListNode* head, bool (*condition)(ListNode*)) {
+	ListNode* curr = head;
+	while (curr && !condition(curr)) { curr = curr->next; }
+	return curr;
+}
+\end{lstlisting}
+
+\section{Thinking in Doubly Linked Lists}
+TODO
+
+\section{LC 0141 - Linked List Cycle}\label{lc0141}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list}, determine if the singly linked list has a \ul{cycle} in it.
+
+\subsection*{Solution 1 - Tortoise and Hare Algorithm}
+\begin{lstlisting}
+bool hasCycle(ListNode *head) {
+	if (!head) { return false; }
+	ListNode *slow = head;
+	ListNode *fast = head->next;
+	while (fast && fast->next) {
+		if (slow == fast) { return true; }
+		slow = slow->next;
+		fast = fast->next->next;
+	}
+	return false;
+}
+\end{lstlisting}
+
+\subsection*{*Solution 2 - Hash Set (Extra Space)}
+\begin{lstlisting}
+bool hasCycle(ListNode* head) {
+	std::unordered_set<ListNode*> visited;
+	ListNode* curr = head;
+	while (curr) {
+		if (visited.find(curr) != visited.end()) { return true; }
+		visited.insert(curr);
+		curr = curr->next;
+	}
+	return false;
+}
+\end{lstlisting}
+
+\section{LC 0206 - Reverse Linked List}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list}, reverse the list, and return the reversed list.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|[1 -> 2 -> 3 -> 4 -> 5] --> [5 -> 4 -> 3 -> 2 -> 1]|}}
+\end{itemize}
+
+\subsection*{Solution 1 - Iterative}\label{solution:lc0206_iterative1}
+Reverse the direction of the pointers in the list.
+\begin{lstlisting}
+ListNode* reverseList(ListNode* head) {
+	ListNode* prev = nullptr;
+	ListNode* curr = head;
+	ListNode* next = nullptr;
+	while (curr) {
+		next = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = next;
+	}
+	return prev;
+}
+\end{lstlisting}
+
+\subsection*{*Solution 2 - Iterative (Tricky)}\label{solution:lc0206_iterative2}
+Iteratively insert each node to the front of the reversed list.
+\begin{lstlisting}
+ListNode* reverseList(ListNode* head) {
+	ListNode* dummy_head = new ListNode();
+	ListNode* curr = head;
+	while (curr) {
+		ListNode* next = curr->next;
+		curr->next = dummy_head->next;
+		dummy_head->next = curr;
+		curr = next;
+	}
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Other Solutions}
+\begin{itemize}
+	\item \hyperref[solution:lc0206_recursion]{Recursion}
+\end{itemize}
+
+\section{LC 0092 - Reverse Linked List II}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list} and two integers {\colorbox{CodeBackground}{\lstinline|left|}} and {\colorbox{CodeBackground}{\lstinline|right|}} where {\colorbox{CodeBackground}{\lstinline|left <= right|}}, reverse the nodes of the list from \ul{position {\colorbox{CodeBackground}{\lstinline|left|}}} to \ul{position {\colorbox{CodeBackground}{\lstinline|right|}}}, and return the reversed list.
+
+\subsection*{Solution 1}
+Reverse the direction of the pointers in the sublist.
+\begin{lstlisting}
+ListNode* reverseBetween(ListNode* head, int left, int right) {
+	if (!head || left == right) { return head; }
+	ListNode* dummy_head = new ListNode();
+	dummy_head->next = head;
+	ListNode* prev = dummy_head;
+	// move prev to the node just before the left node
+	for (int i = 0; i < left - 1; ++i) { prev = prev->next; }
+	// reverse the sublist from left to right
+	ListNode* curr = prev->next;
+	ListNode* next = nullptr;
+	for (int i = 0; i < right - left; ++i) {
+		next = curr->next;
+		curr->next = next->next;
+		next->next = prev->next;
+		prev->next = next;
+	}
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Solution 2}
+Iteratively insert each node to the front of the reversed sublist.
+\begin{lstlisting}
+ListNode* reverseBetween(ListNode* head, int left, int right) {
+	if (!head || left == right) { return head; }
+	ListNode* dummy_head = new ListNode();
+	dummy_head->next = head;
+	ListNode* prev = dummy_head;
+	// move prev to the node before the left position
+	for (int i = 0; i < left - 1; ++i) prev = prev->next;
+	// iteratively insert the node to the front of the reversed sublist
+	ListNode* start = prev->next;
+	ListNode* then = start->next;
+	for (int i = 0; i < right - left; ++i) {
+		start->next = then->next;
+		then->next = prev->next;
+		prev->next = then;
+		then = start->next;
+	}
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\section{LC 0061 - Rotate List}\label{lc0061}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list}, \ul{rotate the list to the right by {\colorbox{CodeBackground}{\lstinline|k|}} steps}, where {\colorbox{CodeBackground}{\lstinline|k|}} is non-negative.
+
+\subsection*{Solution}
+\begin{lstlisting}
+ListNode* rotateRight(ListNode* head, int k) {
+	if (head == nullptr || k == 0) { return head; }
+	// determine len of linked list
+	ListNode* curr = head;
+	int len = 1;
+	while (curr->next) {
+		++len;
+		curr = curr->next;
+	}
+	// connect tail to head
+	curr->next = head;
+	// find new tail
+	int steps_to_new_tail = len - k % len;
+	while (steps_to_new_tail--) { curr = curr->next; }
+	// break circle
+	head = curr->next;
+	curr->next = nullptr;
+	return head;
+}
+\end{lstlisting}
+
+\subsection*{Related}
+\begin{itemize}
+	\item \hyperref[lc0189]{LC 0189 - Rotate Array}
+	\item \hyperref[lc0061]{LC 0061 - Rotate List}
+\end{itemize}
+
+\section{LC 0086 - Partition List}\label{lc0086}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list} and a value {\colorbox{CodeBackground}{\lstinline|x|}}, partition it such that all nodes less than x come before nodes greater than or equal to {\colorbox{CodeBackground}{\lstinline|x|}}. You should preserve the original relative order of the nodes in each of the two partitions.
+
+\subsection*{Solution}
+\begin{lstlisting}
+ListNode* partition(ListNode* head, int x) {
+	ListNode* less_dummy_head = new ListNode();
+	ListNode* greater_dummy_head = new ListNode();
+	ListNode* less_ptr = less_dummy_head;
+	ListNode* greater_ptr = greater_dummy_head;
+	while (head) {
+		if (head->val < x) {
+			less_ptr->next = head;
+			less_ptr = less_ptr->next;
+		} else {
+			greater_ptr->next = head;
+			greater_ptr = greater_ptr->next;
+		}
+		head = head->next;
+	}
+	less_ptr->next = greater_dummy_head->next;
+	greater_ptr->next = nullptr;
+	return less_dummy_head->next;
+}
+\end{lstlisting}
+
+\section{LC 0083 - Remove Duplicates from Sorted List}\label{lc0083}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{sorted singly linked list}, delete all duplicates such that each element appears only once. Return the singly linked list sorted as well.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|[1 -> 1 -> 2] --> [1 -> 2]|}}
+\item {\colorbox{CodeBackground}{\lstinline|[1 -> 1 -> 2 -> 3 -> 3] --> [1 -> 2 -> 3]|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+ListNode* deleteDuplicates(ListNode* head) {
+	ListNode* curr = head;
+	while (curr != nullptr && curr->next != nullptr) {
+		if (curr->val == curr->next->val) {
+			ListNode* to_delete = curr->next;
+			curr->next = to_delete->next;
+			delete to_delete;
+		} else {
+			curr = curr->next;
+		}
+	}
+	return head;
+}
+\end{lstlisting}
+
+\subsection*{Related}
+\begin{itemize}
+	\item \hyperref[lc0026]{LC 0026 - Remove Duplicates from Sorted Array}
+	\item \hyperref[lc0080]{LC 0080 - Remove Duplicates from Sorted Array II}
+	\item \hyperref[lc0083]{LC 0083 - Remove Duplicates from Sorted List}
+	\item \hyperref[lc0082]{LC 0082 - Remove Duplicates from Sorted List II}
+\end{itemize}
+
+\section{LC 0082 - Remove Duplicates from Sorted List II}\label{lc0082}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{sorted singly linked list}, delete all nodes that have duplicate numbers, leaving only distinct numbers from the original list. Return the singly linked list sorted as well.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|[1 -> 2 -> 3 -> 3 -> 4 -> 4 -> 5] --> [1 -> 2 -> 5]|}}
+\item {\colorbox{CodeBackground}{\lstinline|[1 -> 1 -> 1 -> 2 -> 3] -> [2 -> 3]|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+ListNode* deleteDuplicates(ListNode* head) {
+	ListNode* dummy_head = new ListNode();
+	dummy_head->next = head;
+	ListNode* prev = dummy_head;
+	while (head != nullptr) {
+		if (head->next == nullptr || head->val != head->next->val) {
+			prev->next = head;
+			prev = prev->next;
+			head = head->next;
+		} else {
+			int duplicateVal = head->val;
+			while (head != nullptr && head->val == duplicateVal) {
+				ListNode* temp = head;
+				head = head->next;
+				delete temp;
+			}
+		}
+	}
+	prev->next = nullptr;
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Related}
+\begin{itemize}
+	\item \hyperref[lc0026]{LC 0026 - Remove Duplicates from Sorted Array}
+	\item \hyperref[lc0080]{LC 0080 - Remove Duplicates from Sorted Array II}
+	\item \hyperref[lc0083]{LC 0083 - Remove Duplicates from Sorted List}
+	\item \hyperref[lc0082]{LC 0082 - Remove Duplicates from Sorted List II}
+\end{itemize}
+
+\section{LC 0019 - Remove Nth Node From End of List}\label{lc0019}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list}, remove the {\colorbox{CodeBackground}{\lstinline|n|}}th node from the end of the list and return the new list.
+
+\subsection*{Solution}
+\begin{lstlisting}
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+	ListNode* dummy_head = new ListNode();
+	dummy_head->next = head;
+	ListNode* p1 = dummy_head;
+	ListNode* p2 = dummy_head;
+	for (int i = 0; i <= n; ++i) { p2 = p2->next; }
+	while (p2) {
+		p2 = p2->next;
+		p1 = p1->next;
+	}
+	ListNode* to_delete = p1->next;
+	p1->next = to_delete->next;
+	delete to_delete;
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\section{LC 0021 - Merge Two Sorted Lists}\label{lc0021}
+Given the heads of two \ul{sorted singly linked lists} {\colorbox{CodeBackground}{\lstinline|list1|}} and {\colorbox{CodeBackground}{\lstinline|list2|}} in \ul{non-decreasing order}. Merge the two lists into a sorted list and return it.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|list1 = [1 ->2 -> 4], list2 = [1 -> 3 -> 4] --> [1 -> 1 -> 2 -> 3 -> 4 -> 4]|}}
+	\item {\colorbox{CodeBackground}{\lstinline|list1 = [], list2 = [] --> []|}}
+	\item {\colorbox{CodeBackground}{\lstinline|list1 = [], list2 = [0] --> [0]|}}
+\end{itemize}
+
+\subsection*{*Solution 1 - Iterative (Extra Space)}\label{solution:lc0021_iterative1}
+\begin{lstlisting}
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+	ListNode* dummy_head = new ListNode();
+	ListNode* curr = dummy_head;
+	while (l1 || l2) {
+		int val1 = l1 ? l1->val : std::numeric_limits<int>::max();
+		int val2 = l2 ? l2->val : std::numeric_limits<int>::max();
+		if (val1 < val2) {
+			curr->next = new ListNode(l1->val);
+			curr = curr->next;
+			l1 = l1->next;
+		} else {
+			curr->next = new ListNode(l2->val);
+			curr = curr->next;
+			l2 = l2->next;
+		}
+	}
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Solution 2 - Iterative (In-place)}\label{solution:lc0021_iterative2}
+\begin{lstlisting}
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+	ListNode* dummy_head = new ListNode();
+	ListNode* curr = dummy_head;
+	while (l1 && l2) {
+		if (l1->val < l2->val) {
+			curr->next = l1;
+			l1 = l1->next;
+		} else {
+			curr->next = l2;
+			l2 = l2->next;
+		}
+		curr = curr->next;
+	}
+	curr->next = l1 ? l1 : l2;
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Other Solutions}
+\begin{itemize}
+\item \hyperref[solution:lc0021_recursion]{Recursion}
+\end{itemize}
+
+\subsection*{Related - Merge Sort}
+\begin{itemize}
+\item \hyperref[lc0088]{LC 0088 - Merge Sorted Array}
+\item \hyperref[lc0021]{LC 0021 - Merge Two Sorted Lists}
+\item \hyperref[lc0148]{LC 0148 - Sort List}
+\end{itemize}
+
+\section{LC 0148 - Sort List}\label{lc0148}
+Given the {\colorbox{CodeBackground}{\lstinline|head|}} of a \ul{singly linked list}, return the list after sorting it in ascending order.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|[4 -> 2 -> 1 -> 3] --> [1 -> 2 -> 3 -> 4]|}}
+\item {\colorbox{CodeBackground}{\lstinline|[-1 -> 5 -> 3 -> 4 -> 0] --> [-1 -> 0 -> 3 -> 4 -> 5]|}}
+\item {\colorbox{CodeBackground}{\lstinline|[] --> []|}}
+\end{itemize}
+
+\subsection*{Solution - Merge Sort}\label{solution:lc0148_merge_sort}
+Merge Sort is better than Quick Sort, because \ul{merge} is easier than \ul{partition} for a linked list.
+\begin{lstlisting}
+ListNode* sortList(ListNode* head) {
+  if (!head || !head->next) { return head; }
+  ListNode* slow = head;
+  ListNode* fast = head;
+  ListNode* prev_mid = nullptr;
+  while (fast && fast->next) {
+    prev_mid = slow;
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+  prev_mid->next = nullptr;
+  ListNode* l1 = sortList(head);
+  ListNode* l2 = sortList(slow);
+  return Merge(l1, l2);
+}
+
+ListNode* Merge(ListNode* l1, ListNode* l2) {
+  ListNode* dummy_head = new ListNode(0);
+  ListNode* curr = dummy_head;
+  while (l1 && l2) {
+    if (l1->val < l2->val) {
+      curr->next = l1;
+      l1 = l1->next;
+    } else {
+      curr->next = l2;
+      l2 = l2->next;
+    }
+    curr = curr->next;
+  }
+  if (l1) {
+    curr->next = l1;
+  } else {
+    curr->next = l2;
+  }
+  return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Other Solutions}
+\begin{itemize}
+%\item \hyperref[solution:lc0148_merge_sort]{Merge Sort}
+\item \hyperref[solution:lc-148_priority_queue]{Priority Queue}
+\end{itemize}
+
+\subsection*{Related - Merge Sort}
+\begin{itemize}
+\item \hyperref[lc0088]{LC 0088 - Merge Sorted Array}
+\item \hyperref[lc0021]{LC 0021 - Merge Two Sorted Lists}
+\item \hyperref[lc0148]{LC 0148 - Sort List}
+\end{itemize}
+
+
+\section{LC 0023 - Merge k Sorted Lists}\label{lc0023}
+You are given an array of {\colorbox{CodeBackground}{\lstinline|k|}} linked-lists lists, each linked-list is sorted in \ul{ascending order}. Merge all the linked-lists into one sorted linked-list and return it.\\
+
+Example:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|lists = [[1,4,5],[1,3,4],[2,6]] --> [1,1,2,3,4,4,5,6]|}}
+	\item {\colorbox{CodeBackground}{\lstinline|lists = [] --> []|}}
+	\item {\colorbox{CodeBackground}{\lstinline|lists = [[]] --> []|}}
+\end{itemize}
+
+\section{LC 0138 - Copy List with Random Pointer}\label{lc0138}
+A linked list of length {\colorbox{CodeBackground}{\lstinline|n|}} is given such that \ul{each node contains an additional random pointer}, which could point to any node in the list, or {\colorbox{CodeBackground}{\lstinline|nullptr|}}. \\
+
+The {\colorbox{CodeBackground}{\lstinline|Node|}} is defined as follows:
+\begin{lstlisting}
+struct Node {
+	Node(int _val) {
+		val = _val;
+		next = nullptr;
+		random = nullptr;
+	}
+	
+	int val;
+	Node* next;
+	Node* random;
+};
+\end{lstlisting}
+
+Construct a \ul{deep copy} of the list and return it.
+
+\subsection*{*Solution 1 - Hash Map}
+\begin{lstlisting}
+Node* copyRandomList(Node* head) {
+	if (!head) { return nullptr; }
+	std::unordered_map<Node*, Node*> origin2copy;
+	Node* curr = head;
+	while (curr) {
+		origin2copy[curr] = new Node(curr->val);
+		curr = curr->next;
+	}
+	for (auto& pair : origin2copy) {
+		Node* origin = pair.first;
+		Node* copy = pair.second;
+		if (origin->next) { copy->next = origin2copy[origin->next]; }
+		if (origin->random) { copy->random = origin2copy[origin->random]; }
+	}
+	return origin2copy[head];
+}
+\end{lstlisting}
+
+\subsection*{Solution 2}
+\begin{lstlisting}
+Node* copyRandomList(Node* head) {
+	if (!head) { return nullptr; }
+	Node* curr = head;
+	// first pass: make copy of each node and insert it to the original list
+	while (curr) {
+		Node* copy = new Node(curr->val);
+		copy->next = curr->next;
+		curr->next = copy;
+		curr = copy->next;
+	}
+	// second pass: assign random pointers for the copy nodes
+	curr = head;
+	while (curr) {
+		if (curr->random) { curr->next->random = curr->random->next; }
+		curr = curr->next->next;
+	}
+	// third pass: extract the copy list
+	curr = head;
+	Node* dummy_head = new Node(0);
+	Node* copy = dummy_head;
+	while (curr) {
+		Node* next = curr->next;
+		copy->next = next;
+		curr->next = next->next;
+		curr = curr->next;
+		copy = copy->next;
+	}
+	return dummy_head->next;
+}
+\end{lstlisting}
+
+\subsection*{Related}
+\begin{itemize}
+	\item \hyperref[lc0138]{LC 0138 - Copy List with Random Pointer}
+	\item \hyperref[lc0133]{LC 0133 - Clone Graph}
+\end{itemize}
+
+\section{LC 0146 - LRU Cache}
+Design a data structure that follows the constraints of a \ul{Least Recently Used (LRU) cache}.\\
+
+Implement the {\colorbox{CodeBackground}{\lstinline|LRUCache|}} class:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|LRUCache(int capacity)|}} - Initialize the LRU cache with positive size {\colorbox{CodeBackground}{\lstinline|capacity|}}.
+	\item {\colorbox{CodeBackground}{\lstinline|int get(int key)|}} -  Return the value of the {\colorbox{CodeBackground}{\lstinline|key|}} if the key exists, otherwise return {\colorbox{CodeBackground}{\lstinline|-1|}}.
+	\item {\colorbox{CodeBackground}{\lstinline|void put(int key, int value)|}} - Update the value of the {\colorbox{CodeBackground}{\lstinline|key|}} if the {\colorbox{CodeBackground}{\lstinline|key|}} exists. Otherwise, add the {\colorbox{CodeBackground}{\lstinline|key-value|}} pair to the cache. If the number of keys exceeds the {\colorbox{CodeBackground}{\lstinline|capacity|}} from this operation, evict the least recently used key.
+\end{itemize}
+
+The functions {\colorbox{CodeBackground}{\lstinline|get|}} and {\colorbox{CodeBackground}{\lstinline|put|}} must each run in {\colorbox{CodeBackground}{\lstinline|O(1)|}} average time complexity.
+
+\subsection*{Solution}
+\begin{lstlisting}
+class LRUCache {
+ public:
+	LRUCache(int capacity) : capacity_(capacity) {}
+	
+	int get(int key) {
+		auto it = cache_.find(key);
+		if (it == cache_.end()) { return -1; }
+		items_.splice(items_.begin(), items_, it->second);
+		return it->second->second;
+	}
+	
+	void put(int key, int value) {
+		auto it = cache_.find(key);
+		if (it != cache_.end()) {
+			it->second->second = value;
+			items_.splice(items_.begin(), items_, it->second);
+			return;
+		}
+		if (items_.size() == capacity_) {
+			auto last = items_.back();
+			cache_.erase(last.first);
+			items_.pop_back();
+		}
+		items_.emplace_front(key, value);
+		cache_[key] = items_.begin();
+	}
+	
+ private:
+	int capacity_;
+	std::list<std::pair<int, int>> items_;
+	std::unordered_map<int, std::list<std::pair<int, int>>::iterator> cache_;
+};
+\end{lstlisting}

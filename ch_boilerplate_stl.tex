@@ -1,0 +1,705 @@
+\chapter{Boilerplates for STL Data Structures}
+\section{{\colorbox{CodeBackground}{\lstinline|std::vector|}}}
+
+\subsection{Insert elements or a subvector}
+\begin{lstlisting}
+void InsertDemo() {
+  std::vector<int> nums = {0, 1, 2, 3, 4, 5};
+
+  /* 1. push_back */
+  nums.push_back(6);
+
+  /* 2. emplace_back */
+  nums.emplace_back(7);
+
+  /* 3. insert */
+  // insert 8 before iterator pos, return iterator to the inserted element
+  auto pos = nums.begin() + 1;
+  auto it1 = nums.insert(pos, 8);
+  std::cout << *it1 << std::endl;  // 8
+
+  // insert 3 9s before iterator pos, return iterator to the first inserted element
+  pos = nums.begin() + 1;
+  auto it2 = nums.insert(pos, 3, 9);
+  std::cout << *it2 << std::endl;  // 9
+
+  // insert {10, 11, 12} before iterator pos, return iterator to the first inserted element
+  pos = nums.begin() + 1;
+  auto it3 = nums.insert(pos, {10, 11, 12});
+  std::cout << *it3 << std::endl;  // 10
+
+  // insert subvector before iterator pos, return iterator to the first inserted
+  pos = nums.begin() + 1;
+  std::vector<int> nums2 = {12, 13, 14, 15, 16};
+  auto it4 = nums.insert(pos, nums2.begin() + 1, nums2.begin() + 4);
+  std::cout << *it4 << std::endl;  // 13
+
+  for (auto& num : nums) { std::cout << num << " "; }
+  std::cout << std::endl;
+  // 0 13 14 15 10 11 12 9 9 9 8 1 2 3 4 5 6 7
+}
+\end{lstlisting}
+
+\subsection{Erase elements or a subvector}
+\begin{lstlisting}
+void EraseDemo() {
+  std::vector<int> nums = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  // 1. erase by iterator, return iterator to the next element
+  auto pos = nums.begin() + 1;
+  auto it1 = nums.erase(pos);
+  std::cout << *it1 << std::endl;  // 2
+
+  // 2. erase by range, return iterator to the next element
+  auto it2 = nums.erase(nums.begin(), nums.begin() + 3);
+  std::cout << *it2 << std::endl;  // 4
+
+  // 3. pop the last element, void function
+  nums.pop_back();
+
+  for (auto& num : nums) { std::cout << num << " "; }
+  std::cout << std::endl;
+  // 4 5 6 7 8 9
+}
+\end{lstlisting}
+
+\subsection{Element Access}
+\begin{lstlisting}[numbers=none]
+void ElementAccessDemo() {
+  std::vector<int> nums = {0, 1, 2, 3, 4, 5};
+
+  /* 1. operator [] */
+  // element exists
+  // return reference to the element
+  int num1 = nums[0];
+  // element does not exist
+  // undefined behavior
+  int num6 = nums[6];
+
+  /* 2. at() */
+  // element exists
+  // return reference to the element
+  int num2 = nums.at(2);
+  // element does not exist
+  // throw std::out_of_range
+  int num7 = nums.at(7);
+
+  // front
+  std::cout << nums.front() << std::endl;  // 0
+
+  // back
+  std::cout << nums.back() << std::endl;  // 5
+}
+\end{lstlisting}
+
+\subsection{Look Up Elements}
+{\colorbox{CodeBackground}{\lstinline|std::vector|}} doesn't provide {\colorbox{CodeBackground}{\lstinline|find|}} function.
+\begin{lstlisting}
+void LookUpDemo() {
+  std::vector<int> nums = {0, 1, 2, 3, 4, 5};
+  auto it = std::find(nums.begin(), nums.end(), 1);
+  if (it != nums.end()) {
+    std::cout << *it << std::endl;
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::string|}}}
+\subsection{Insert characters or a substring}
+\begin{lstlisting}
+void InsertDemo() {
+  std::string str = "0123456789";
+
+  // insert 'x' before iterator pos, return iterator to the inserted character
+  auto pos = str.begin() + 5;
+  auto it1 = str.insert(pos, 'x');
+  std::cout << *it1 << std::endl;  // x
+
+  // insert 3 'y's before iterator pos, return iterator to the first inserted character
+  pos = str.begin() + 5;
+  auto it2 = str.insert(pos, 3, 'y');
+  std::cout << *it2 << std::endl;  // y
+
+  // insert {'i', 'j', 'k'} before iterator pos, return iterator to the first inserted
+  // character
+  pos = str.begin() + 5;
+  auto it3 = str.insert(pos, {'i', 'j', 'k'});
+  std::cout << *it3 << std::endl;  // i
+
+  std::string str2 = "abcdefg";
+  // insert "abc" before iterator pos, return iterator to the first inserted character
+  pos = str.begin() + 5;
+  auto it4 = str.insert(pos, str2.begin(), str2.begin() + 3);
+  std::cout << *it4 << std::endl;  // a
+
+  std::cout << str << std::endl;  // 01234abcijkyyyx56789
+}
+\end{lstlisting}
+
+\subsection{Append characters or a substring}
+\begin{lstlisting}
+void AppendDemo() {
+  std::string str = "0123456789";
+
+  // append 'x' to the end of the string
+  str.push_back('x');
+
+  // append 3 'y's to the end of the string
+  str.append(3, 'y');
+
+  // append {'i', 'j', 'k'} to the end of the string
+  str.append({'i', 'j', 'k'});
+
+  std::string str2 = "abcdefg";
+  // append "abc" to the end of the string
+  str.append(str2.begin(), str2.begin() + 3);
+
+  std::cout << str << std::endl;  // 0123456789xyyyijkabc
+}
+\end{lstlisting}
+
+\subsection{Concatenate strings}
+\begin{lstlisting}
+void ConcatenateDemo() {
+  std::string str = "0123456789";
+
+  // concatenate str and a character
+  str += 'x';
+
+  // concatenate str and a string
+  std::string str2 = "abcdefg";
+  str += str2;
+
+  std::cout << str << std::endl;  // 0123456789xabcdefg
+}
+\end{lstlisting}
+
+\subsection{Erase characters or a substring}
+\begin{lstlisting}
+void EraseDemo() {
+  std::string str = "0123456789";
+
+  // 1. erase by iterator, return iterator to the next character
+  auto pos = str.begin() + 5;
+  auto it1 = str.erase(pos);
+  std::cout << *it1 << std::endl;  // 6
+
+  // 2. erase by range, return iterator to the next character
+  auto it2 = str.erase(str.begin() + 5, str.begin() + 8);
+  std::cout << *it2 << std::endl;  // 9
+
+  // 3. pop the last character, void function
+  str.pop_back();
+
+  std::cout << str << std::endl;  // 01234
+}
+\end{lstlisting}
+
+\subsection{Lookup a character or a substring}
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|std::string::npos == size_type(-1)|}}, which means no positions.
+\item The only difference between {\colorbox{CodeBackground}{\lstinline|find|}} and {\colorbox{CodeBackground}{\lstinline|rfind|}} is that {\colorbox{CodeBackground}{\lstinline|find|}} searches from the beginning of the string and {\colorbox{CodeBackground}{\lstinline|rfind|}} searches from the end of the string. We only demonstrate {\colorbox{CodeBackground}{\lstinline|find|}} here.
+\end{itemize}
+
+\begin{lstlisting}
+void LookUpDemo() {
+  std::string str = "01234567890123456789";
+
+  // find the first occurrence of the given character, return index
+  int idx = str.find('5');
+  if (idx != std::string::npos) {
+    std::cout << idx << std::endl;  // 5
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+
+  // find the first occurrence of the given substring, return index
+  idx = str.find("345");
+  if (idx != std::string::npos) {
+    std::cout << idx << std::endl;  // 3
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+
+  // start searching from the given index, return index
+  idx = str.find('0', 10);
+  if (idx != std::string::npos) {
+    std::cout << idx << std::endl;  // 10
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+
+  // start searching from the given index, return index
+  idx = str.find("012", 10);
+  if (idx != std::string::npos) {
+    std::cout << idx << std::endl;  // 10
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+}
+\end{lstlisting}
+
+\subsection{Character Operation}
+\begin{lstlisting}
+void CharacterOperation() {
+  char ch = 'a';
+
+  int isalnum(int ch);
+  int isalpha(int ch);
+  int isdigit(int ch);
+
+  int std::tolower(int ch);
+  int std::toupper(int ch);
+
+  std::string str = "AbcDefG";
+  std::transform(str.begin(), str.end(), str.begin(),
+                 [](char c) { return std::tolower(c); });
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::stack|}}}
+\begin{lstlisting}
+void StackDemo() {
+  std::stack<int> num_stk;
+  std::stack<std::pair<int, std::string>> pair_stk;
+
+  /* 1. push, void function */
+  num_stk.push(1);
+  num_stk.push(2);
+  num_stk.push(3);
+  num_stk.push(4);
+  num_stk.push(5);
+
+  /* 2. emplace, void function */
+  pair_stk.emplace(1, "one");
+  pair_stk.emplace(2, "two");
+  pair_stk.emplace(3, "three");
+  pair_stk.emplace(4, "four");
+  pair_stk.emplace(5, "five");
+
+  /* 3. top, return reference to the top element in the stack */
+  /* 4. pop, void function */
+  while (!num_stk.empty()) {
+    auto x_ref = num_stk.top();
+    std::cout << x_ref << " ";
+    num_stk.pop();
+  }
+  // 5 4 3 2 1
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::queue|}}}
+\begin{lstlisting}
+void QueueDemo() {
+  std::queue<int> num_que;
+  std::queue<std::pair<int, std::string>> pair_que;
+
+  /* 1. push, void function */
+  num_que.push(1);
+  num_que.push(2);
+  num_que.push(3);
+  num_que.push(4);
+  num_que.push(5);
+
+  /* 2. emplace, void function */
+  pair_que.emplace(1, "one");
+  pair_que.emplace(2, "two");
+  pair_que.emplace(3, "three");
+  pair_que.emplace(4, "four");
+  pair_que.emplace(5, "five");
+
+  /* 3. front, return reference to the front element in the queue */
+  /* 4. back, return reference to the back element in the queue */
+  /* 5. pop, void function */
+  while (!num_que.empty()) {
+    auto x_ref = num_que.front();
+    std::cout << x_ref << " ";
+    num_que.pop();
+  }
+  // 1 2 3 4 5
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::deque|}}}
+Both {\colorbox{CodeBackground}{\lstinline|std::stack|}} and {\colorbox{CodeBackground}{\lstinline|std::queue|}} are implemented by {\colorbox{CodeBackground}{\lstinline|std::deque|}} by default.
+
+\begin{lstlisting}
+void DequeDemo() {
+  std::deque<int> num_deque;
+  std::deque<std::pair<int, std::string>> pair_deque;
+
+  /* 1. push_back, push_front, void function */
+  num_deque.push_back(1);
+  num_deque.push_back(2);
+  num_deque.push_back(3);
+  num_deque.push_front(4);
+  num_deque.push_front(5);
+  num_deque.push_front(6);
+
+  /* 2. emplace_back, emplace_front, void function */
+  pair_deque.emplace_back(1, "one");
+  pair_deque.emplace_back(2, "two");
+  pair_deque.emplace_back(3, "three");
+  pair_deque.emplace_front(4, "four");
+  pair_deque.emplace_front(5, "five");
+  pair_deque.emplace_front(6, "six");
+
+  /* 3. front, return reference to the front element in the deque */
+  /* 4. back, return reference to the back element in the deque */
+  /* 5. pop_front, pop_back, void function */
+  while (!num_deque.empty()) {
+    auto x_ref = num_deque.front();
+    std::cout << x_ref << " ";
+    num_deque.pop_front();
+  }
+  // 6 5 4 1 2 3
+  while (!pair_deque.empty()) {
+    auto x_ref = pair_deque.back();
+    std::cout << x_ref.first << " " << x_ref.second << " ";
+    pair_deque.pop_back();
+  }
+  // 3 three 2 two 1 one 4 four 5 five 6 six
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::priority_queue|}}}
+\subsection{Elements of Built-in Type}
+\begin{lstlisting}
+int BuiltInTypeDemo() {
+  std::priority_queue<int> max_heap;
+  max_heap.push(3);
+  max_heap.push(5);
+  max_heap.push(1);
+  max_heap.push(2);
+  max_heap.push(4);
+  while (!max_heap.empty()) {
+    std::cout << max_heap.top() << " ";
+    max_heap.pop();
+  }
+  std::cout << std::endl;  // 5 4 3 2 1
+
+  std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+  min_heap.push(3);
+  min_heap.push(5);
+  min_heap.push(1);
+  min_heap.push(2);
+  min_heap.push(4);
+  while (!min_heap.empty()) {
+    std::cout << min_heap.top() << " ";
+    min_heap.pop();
+  }
+  std::cout << std::endl;  // 1 2 3 4 5
+
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Elements of Customized Type}
+\begin{lstlisting}
+class Compare {
+ public:
+  bool operator()(const std::pair<char, int>& lhs, const std::pair<char, int>& rhs) {
+    return lhs.second > rhs.second;
+  }
+};
+
+int CustomizedTypeDemo() {
+  /* 1. use a functor to define the comparison function */
+  std::priority_queue<std::pair<char, int>, std::vector<std::pair<char, int>>, Compare>
+      min_heap;
+  min_heap.push({'a', 3});
+  min_heap.push({'b', 5});
+  min_heap.push({'c', 1});
+  min_heap.push({'d', 2});
+  min_heap.push({'e', 4});
+  while (!min_heap.empty()) {
+    std::cout << min_heap.top().first << " ";
+    min_heap.pop();
+  }
+  std::cout << std::endl;  // c d a e b
+
+  /* 2. use lambda function to define the comparison function */
+  auto compare = [](const std::pair<char, int>& lhs, const std::pair<char, int>& rhs) {
+    return lhs.second < rhs.second;
+  };
+  std::priority_queue<std::pair<char, int>, std::vector<std::pair<char, int>>,
+                      decltype(compare)>
+      max_heap(compare);
+  max_heap.push({'a', 3});
+  max_heap.push({'b', 5});
+  max_heap.push({'c', 1});
+  max_heap.push({'d', 2});
+  max_heap.push({'e', 4});
+  while (!max_heap.empty()) {
+    std::cout << max_heap.top().first << " ";
+    max_heap.pop();
+  }
+  std::cout << std::endl;  // b e a d c
+
+  return 0;
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::unordered_set|}}}
+\subsection{Insert Elements}
+\begin{lstlisting}
+void InsertDemo() {
+  std::unordered_set<int> nums = {0, 1, 2, 3, 4, 5};
+
+  /* 1. insert */
+  // insert 6, return pair<iterator, bool> indicating the insertion result
+  auto res1 = nums.insert(6);
+  std::cout << *res1.first << " " << res1.second << std::endl;  // 6 1
+
+  // insert 6 again, return pair<iterator, bool> indicating the insertion result
+  auto res2 = nums.insert(6);
+  std::cout << *res2.first << " " << res2.second << std::endl;  // 6 0
+
+  /* 2. emplace */
+  // emplace 7, return pair<iterator, bool> indicating the insertion result
+  auto res3 = nums.emplace(7);
+  std::cout << *res3.first << " " << res3.second << std::endl;  // 7 1
+
+  // emplace 7 again, return pair<iterator, bool> indicating the insertion result
+  auto res4 = nums.emplace(7);
+  std::cout << *res4.first << " " << res4.second << std::endl;  // 7 0
+}
+
+\end{lstlisting}
+
+\subsection{Erase Elements}
+\begin{lstlisting}
+void EraseDemo() {
+  std::unordered_set<int> nums = {0, 1, 2, 3, 4, 5};
+
+  // 1. erase by iterator, return iterator to the next element
+  for (auto it = nums.begin(); it != nums.end();) {
+    if (*it % 2 == 0)
+      it = nums.erase(it);
+    else
+      ++it;
+  }
+
+  // 2. erase by key, return the number of elements erased (0 or 1)
+  int count = nums.erase(3);
+  std::cout << count << std::endl;
+  count = nums.erase(3);
+  std::cout << count << std::endl;
+}
+\end{lstlisting}
+
+\subsection{Look Up Elements}
+\begin{lstlisting}
+void LookUpDemo() {
+  std::unordered_set<int> nums = {0, 1, 2, 3, 4, 5};
+
+  auto it1 = nums.find(3);
+  if (it1 != nums.end()) {
+    std::cout << *it1 << std::endl;
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::unordered_map|}}}
+Each {\color{blue}{element}} in a {\colorbox{CodeBackground}{\lstinline|std::unordered_map|}} is internally stored as a {\color{blue}{key-value pair,}} and this pair is implemented using {\colorbox{CodeBackground}{\lstinline|std::pair|}}.
+
+\subsection{Insert Elements}
+\begin{lstlisting}
+void InsertDemo() {
+  std::unordered_map<int, std::string> num2str = {{1, "one"}, {2, "two"}, {3, "three"}};
+
+  /* 1. insert */
+  num2str.insert({4, "four"});
+  num2str.insert(std::make_pair(5, "five"));
+  num2str.insert(std::pair<int, std::string>(6, "six"));
+
+  /* 2. emplace */
+  num2str.emplace(7, "seven");
+
+  /* 3. operator [] */
+  num2str[10] = "ten";
+}
+\end{lstlisting}
+
+\subsection{Erase Elements}
+\begin{lstlisting}
+void EraseDemo() {
+  std::unordered_map<int, std::string> num2str = {{1, "one"}, {2, "two"}, {3, "three"}};
+
+  /* 1. erase by key */
+  num2str.erase(1);
+
+  /* 2. erase by iterator */
+  auto it = num2str.find(2);
+  if (it != num2str.end()) {
+    num2str.erase(it);
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+}
+\end{lstlisting}
+
+\subsection{Access Elements}
+\begin{lstlisting}
+void ElementAccessDemo() {
+  std::unordered_map<int, std::string> num2str = {{1, "one"}, {2, "two"}, {3, "three"}};
+
+  /* 1. operator [] */
+  // element exists
+  // return reference to the mapped value of the existing element
+  std::string num1 = num2str[1];
+  // no element exists
+  // insert a new element and return reference to the mapped value of the new element
+  std::string num4 = num2str[4];
+
+  /* 2. at() */
+  // element exists
+  // return reference to the mapped value of the existing element
+  std::string num2 = num2str.at(2);
+  // no element exists
+  // throw std::out_of_range
+  std::string num5 = num2str.at(5);
+}
+\end{lstlisting}
+
+\subsection{Iteration}
+\begin{lstlisting}
+void IterateDemo() {
+  std::unordered_map<int, std::string> num2str = {{1, "one"}, {2, "two"}, {3, "three"}};
+
+  for (auto& pair : num2str) {
+    std::cout << pair.first << std::endl;   // key
+    std::cout << pair.second << std::endl;  // value
+  }
+
+  for (auto it = num2str.begin(); it != num2str.end(); ++it) {
+    std::cout << it->first << std::endl;   // key
+    std::cout << it->second << std::endl;  // value
+  }
+}
+\end{lstlisting}
+
+\subsection{Look Up Elements}
+\begin{lstlisting}
+void LookUpDemo() {
+  std::unordered_map<int, std::string> num2str = {{1, "one"}, {2, "two"}, {3, "three"}};
+  auto it = num2str.find(1);
+  if (it != num2str.end()) {
+    std::cout << it->second << std::endl;
+  } else {
+    std::cout << "not found" << std::endl;
+  }
+}
+\end{lstlisting}
+
+\chapter{Boilerplates for STL Algorithms}
+\section{{\colorbox{CodeBackground}{\lstinline|std::find|}}}
+\begin{lstlisting}
+if (std::find(vec.begin(), vec.end(), x) != vec.end()) {
+	...
+} else {
+	...
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::remove|}}}
+\begin{lstlisting}
+// Removing is done by shifting the elements in the range in such a way that the elements 
+// that are not to be removed appear in the beginning of the range.
+// Return past-the-end iterator for the new range of values.
+it = std::remove(vec.begin(), vec.end(), val);
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::unique|}}}
+\begin{lstlisting}
+void unique_demo() {
+  std::vector<int> nums = {2, 2, 1, 1, 3, 3, 4, 4};
+  auto it = std::unique(nums.begin(), nums.end());
+  nums.erase(it, nums.end());
+  for (int num : nums) { std::cout << num << " "; }
+  // 2 1 3 4
+}
+\end{lstlisting}
+
+\chapter{Boilerplates for STL Utilities}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::transform|}}}
+\section{{\colorbox{CodeBackground}{\lstinline|std::partial_sum|}}}
+\begin{lstlisting}
+int PartialSumDemo() {
+  std::vector<int> nums(10, 2);
+
+  // partial sum
+  std::vector<int> prefix_sum(nums.size());
+  std::partial_sum(nums.begin(), nums.end(), prefix_sum.begin());
+  for (int num : prefix_sum) { std::cout << num << ' '; }
+  std::cout << std::endl;
+
+  // partial product
+  std::vector<int> prefix_product(nums.size());
+  std::partial_sum(nums.begin(), nums.end(), prefix_product.begin(), std::multiplies<int>());
+  for (int num : prefix_product) { std::cout << num << ' '; }
+  std::cout << std::endl;
+}
+\end{lstlisting}
+\section{{\colorbox{CodeBackground}{\lstinline|std::accumulate|}}}
+\begin{lstlisting}
+int AccumulateDemo() {
+  std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  // accumulate sum (default)
+  int sum = std::accumulate(v.begin(), v.end(), 0);
+  std::cout << sum << std::endl;  // 55
+
+  // accumulate product
+  int product = std::accumulate(v.begin(), v.end(), 1, std::multiplies<int>());
+  std::cout << product << std::endl;  // 3628800
+
+  // dash-separated string
+  std::string str = std::accumulate(
+      std::next(v.begin()), v.end(), std::to_string(v[0]),
+      [](std::string a, int b) { return std::move(a) + '-' + std::to_string(b); });
+  std::cout << str << std::endl;  // 1-2-3-4-5-6-7-8-9-10
+}
+\end{lstlisting}
+
+\section{{\colorbox{CodeBackground}{\lstinline|std::istringstream|}}}
+When you use an {\colorbox{CodeBackground}{\lstinline|std::istringstream|}}, you typically initialize it with a {\colorbox{CodeBackground}{\lstinline|std::string|}}. Once initialized, you can extract data from the string as if you were reading from a file or the console. It's particularly useful for {\color{blue}{parsing and tokenizing strings}} because it automatically handles whitespace and can convert text to various data types (like {\colorbox{CodeBackground}{\lstinline|int|}}, {\colorbox{CodeBackground}{\lstinline|double|}}, {\colorbox{CodeBackground}{\lstinline|std::string|}}, etc.) using the formatted input operator {\colorbox{CodeBackground}{\lstinline|>>|}}.\\
+
+In C++ stream operations, if an input operation fails, the stream enters a fail state, and the get pointer (which indicates the current position in the input stream) typically does not advance. This means that if you attempt to read an integer but the stream contains characters that cannot be interpreted as an integer, the read operation will fail, the stream's failbit will be set, and the get pointer will not move to the next characters in the stream.\\
+
+However, it's important to note that the fail state does not automatically clear itself. If you want to perform further operations on the stream after a failure, you must clear the error flags using the {\colorbox{CodeBackground}{\lstinline|clear()|}} member function.
+
+\begin{lstlisting}
+int Demo() {
+  std::istringstream iss("123 abc");
+  int num;
+  std::string str;
+  // this operation will succeed and num will contain 123
+  if (iss >> num) {
+    std::cout << "read int: " << num << std::endl;
+  } else {
+    std::cout << "failed to read int" << std::endl;
+  }
+  // this operation will fail because the next in the stream is not an int
+  if (iss >> num) {
+    std::cout << "read int: " << num << std::endl;
+  } else {
+    std::cout << "failed to read int" << std::endl;
+  }
+
+  iss.clear();
+
+  // this operation will succeed and str will contain "abc"
+  if (iss >> str) {
+    std::cout << "read string: " << str << std::endl;
+  } else {
+    std::cout << "failed to read string" << std::endl;
+  }
+  return 0;
+}
+\end{lstlisting}

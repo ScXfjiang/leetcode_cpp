@@ -1,0 +1,182 @@
+\chapter{Boilerplate for Tree}
+\section{Binary Tree}
+
+\subsection{Data Structures and Interfaces}
+\begin{lstlisting}
+class BTNode {
+ public:
+	BTNode(int data) : data_(data), left_(nullptr), right_(nullptr) {}
+	
+	int data_;
+	BTNode* left_;
+	BTNode* right_;
+};
+
+// Interface
+BTNode* BSTInsertRecursive(BTNode* root, int data);
+BTNode* BSTInsertIterative(BTNode* root, int data);
+void PreorderTraversalRecursive(BTNode* root);
+void PreorderTraversalIterative(BTNode* root);
+void InorderTraversalRecursive(BTNode* root);
+void InorderTraversalIterative(BTNode* root);
+void PostorderTraversalRecursive(BTNode* root);
+void PostorderTraversalIterativeOneStack(BTNode* root);
+void PostorderTraversalIterativeTwoStack(BTNode* root);
+void LevelorderTraversal(BTNode* root);
+\end{lstlisting}
+
+\subsection{Insertion (BST)}
+\begin{lstlisting}
+BTNode* BSTInsertRecursive(BTNode* root, int data) {
+	if (!root) { return new BTNode(data); }
+	if (data < root->data_) {
+		root->left_ = BSTInsertRecursive(root->left_, data);
+	} else {
+		root->right_ = BSTInsertRecursive(root->right_, data);
+	}
+	return root;
+}
+
+BTNode* BSTInsertIterative(BTNode* root, int data) {
+	if (!root) { return new BTNode(data); }
+	BTNode* prev = nullptr;
+	BTNode* curr = root;
+	while (curr) {
+		prev = curr;
+		curr = data < curr->data_ ? curr->left_ : curr->right_;
+	}
+	if (data < prev->data_) {
+		prev->left_ = new BTNode(data);
+	} else {
+		prev->right_ = new BTNode(data);
+	}
+	return root;
+}
+\end{lstlisting}
+
+\subsection{Pre-order Traversal}
+\begin{lstlisting}
+void PreorderTraversalRecursive(BTNode* root) {
+	if (!root) { return; }
+	// handle the node, e.g., print it
+	std::cout << root->data_ << " ";
+	PreorderTraversalRecursive(root->left_);
+	PreorderTraversalRecursive(root->right_);
+}
+
+void PreorderTraversalIterative(BTNode* root) {
+  if (!root) { return; }
+  std::stack<BTNode*> stk;
+  stk.push(root);
+  while (!stk.empty()) {
+    BTNode* top = stk.top();
+    stk.pop();
+    // handle the node, e.g., print it
+    std::cout << top->data_ << " ";
+    if (top->right_) { stk.push(top->right_); }
+    if (top->left_) { stk.push(top->left_); }
+  }
+}
+\end{lstlisting}
+
+\subsection{In-order Traversal}
+\begin{lstlisting}
+void InorderTraversalRecursive(BTNode* root) {
+	if (!root) { return; }
+	InorderTraversalRecursive(root->left_);
+	// handle the node, e.g., print it
+	std::cout << root->data_ << " ";
+	InorderTraversalRecursive(root->right_);
+}
+
+void InorderTraversalIterative(BTNode* root) {
+	if (!root) { return; }
+	std::stack<BTNode*> stk;
+	BTNode* curr = root;
+	while (curr || !stk.empty()) {
+		while (curr) {
+			stk.push(curr);
+			curr = curr->left_;
+		}
+		BTNode* top = stk.top();
+		stk.pop();
+		// handle the node, e.g., print it
+		std::cout << top->data_ << " ";
+		curr = top->right_;
+	}
+}
+
+\end{lstlisting}
+
+\subsection{Post-order Traversal}
+\begin{lstlisting}
+void PostorderTraversalRecursive(BTNode* root) {
+	if (!root) { return; }
+	PostorderTraversalRecursive(root->left_);
+	PostorderTraversalRecursive(root->right_);
+	// handle the node, e.g., print it
+	std::cout << root->data_ << " ";
+}
+
+void PostorderTraversalIterativeOneStack(BTNode* root) {
+	if (!root) { return; }
+	std::stack<BTNode*> stk;
+	BTNode* curr = root;
+	BTNode* last_visit = nullptr;
+	while (curr || !stk.empty()) {
+		while (curr) {
+			stk.push(curr);
+			curr = curr->left_;
+		}
+		BTNode* top = stk.top();
+		if (top->right_ && top->right_ != last_visit) {
+			// right node exists && right node is not visited
+			curr = top->right_;
+		} else {
+			// right node does not exist || right node is visited
+			// handle the node, e.g., print it
+			std::cout << top->data_ << " ";
+			last_visit = top;
+			stk.pop();
+		}
+	}
+}
+
+// reversed postorder traversal == adjusted preorder traversal
+void PostorderTraversalIterativeTwoStack(BTNode* root) {
+	if (!root) { return; };
+	std::stack<BTNode*> stk1;
+	std::stack<BTNode*> stk2;
+	BTNode* curr = root;
+	stk1.push(curr);
+	while (!stk1.empty()) {
+		curr = stk1.top();
+		stk1.pop();
+		stk2.push(curr);
+		if (curr->left_) { stk1.push(curr->left_); }
+		if (curr->right_) { stk1.push(curr->right_); }
+	}
+	while (!stk2.empty()) {
+		// handle the node, e.g., print it
+		std::cout << stk2.top()->data_ << " ";
+		stk2.pop();
+	}
+}
+\end{lstlisting}
+
+\subsection{Level-order Traversal}
+\begin{lstlisting}
+void LevelorderTraversal(BTNode* root) {
+  if (!root) { return; }
+  std::queue<BTNode*> q;
+  q.push(root);
+  while (!q.empty()) {
+    BTNode* front = q.front();
+    q.pop();
+    // handle the node, e.g., print it
+    std::cout << front->data_ << " ";
+    if (front->left_) { q.push(front->left_); }
+    if (front->right_) { q.push(front->right_); }
+  }
+}
+\end{lstlisting}

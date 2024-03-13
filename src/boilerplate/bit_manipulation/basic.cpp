@@ -1,0 +1,118 @@
+#include <cstdint>
+
+// get the i-th bit
+int GetBit(uint32_t num, int i) { return (num >> i) & 1; }
+
+// set the i-th bit to 0
+int SetZero(uint32_t num, int i) {
+  int mask = ~(1 << i);
+  return num & mask;
+}
+
+// set the i-th bit to 1
+int SetOne(uint32_t num, int i) {
+  int mask = 1 << i;
+  return num | mask;
+}
+
+// set all bits in range [i, j] to 0
+int SetZeroInRange(uint32_t num, int i, int j) {
+  int mask = ~(((1 << (j - i + 1)) - 1) << i);
+  return num & mask;
+}
+
+// set all bits in range [i, j] to 1
+int SetOneInRange(uint32_t num, int i, int j) {
+  int mask = (1 << (j - i + 1)) - 1;
+  mask <<= i;
+  return num | mask;
+}
+
+// flip the i-th bit
+int FlipBit(uint32_t num, int i) {
+  int mask = 1 << i;
+  return num ^ mask;
+}
+
+// toggle all bits in range [i, j]
+int ToggleBits(uint32_t num, int i, int j) {
+  int mask = (1 << (j - i + 1)) - 1;
+  mask <<= i;
+  return num ^ mask;
+}
+
+// clear all bits from the most significant bit to i (inclusive)
+int ClearBitsFromMSBToI(uint32_t num, int i) {
+  int mask = (1 << i) - 1;
+  return num & mask;
+}
+
+// clear all bits from i to 0 (LSB) (inclusive)
+int ClearBitsFromITOLSB(uint32_t num, int i) {
+  int mask = ~((1 << (i + 1)) - 1);
+  return num & mask;
+}
+
+// get the number of 1s in the binary representation of num
+int CountOnes(uint32_t num) {
+  int cnt = 0;
+  while (num) {
+    cnt += num & 1;
+    num >>= 1;
+  }
+  return cnt;
+}
+
+// get the number of 0s in the binary representation of num
+int CountZeros(uint32_t num) {
+  int cnt = 0;
+  while (num) {
+    cnt += !(num & 1);
+    num >>= 1;
+  }
+  return cnt;
+}
+
+// get the number of leading zeros in the binary representation of num
+int CountLeadingZeros(uint32_t num) {
+  int cnt = 0;
+  while (num) {
+    if (num & 0x80000000) { break; }
+    cnt++;
+    num <<= 1;
+  }
+  return cnt;
+}
+
+// get the number of trailing zeros in the binary representation of num
+int CountTrailingZeros(uint32_t num) {
+  int cnt = 0;
+  while (num) {
+    if (num & 1) { break; }
+    cnt++;
+    num >>= 1;
+  }
+  return cnt;
+}
+
+// get the number of leading ones in the binary representation of num
+int CountLeadingOnes(uint32_t num) {
+  int cnt = 0;
+  while (num) {
+    if (!(num & 0x80000000)) { break; }
+    cnt++;
+    num <<= 1;
+  }
+  return cnt;
+}
+
+// get the number of trailing ones in the binary representation of num
+int CountTrailingOnes(uint32_t num) {
+  int cnt = 0;
+  while (num) {
+    if (!(num & 1)) { break; }
+    cnt++;
+    num >>= 1;
+  }
+  return cnt;
+}

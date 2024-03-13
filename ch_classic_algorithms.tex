@@ -1,0 +1,24 @@
+\chapter{Classic Algorithms}\label{ch:classic_algorithms}
+\section{LC 0169 - Majority Element}
+Given an array {\colorbox{CodeBackground}{\lstinline|nums|}} of size {\colorbox{CodeBackground}{\lstinline|n|}}, return the \ul{majority element}.\\
+
+The majority element is the element that appears more than {\colorbox{CodeBackground}{\lstinline|n / 2|}} times. You may assume that the majority element always exists in the array.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|nums = [3,2,3] --> 3|}}
+	\item {\colorbox{CodeBackground}{\lstinline|nums = [2,2,1,1,1,2,2] --> 2|}}
+\end{itemize}
+
+\subsection*{Solution - Boyer–Moore Majority Vote Algorithm}
+\begin{lstlisting}
+int majorityElement(std::vector<int>& nums) {
+	int candidate = 0;
+	int count = 0;
+	for (auto num : nums) {
+		if (count == 0) { candidate = num; }
+		count += (num == candidate) ? 1 : -1;
+	}
+	return candidate;
+}
+\end{lstlisting}

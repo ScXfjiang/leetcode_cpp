@@ -1,0 +1,1134 @@
+\chapter{String}
+\section{LC 0028 - Find the Index of the First Occurrence in a String}
+Given two \ul{non-empty} strings {\colorbox{CodeBackground}{\lstinline|needle|}} and {\colorbox{CodeBackground}{\lstinline|haystack|}}, return the index of the first occurrence of {\colorbox{CodeBackground}{\lstinline|needle|}} in {\colorbox{CodeBackground}{\lstinline|haystack|}}, or {\colorbox{CodeBackground}{\lstinline|-1|}} if {\colorbox{CodeBackground}{\lstinline|needle|}} is not part of {\colorbox{CodeBackground}{\lstinline|haystack|}}.\\
+
+{\colorbox{CodeBackground}{\lstinline|haystack|}} and {\colorbox{CodeBackground}{\lstinline|needle|}} consist of only \ul{lowercase English characters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|haystack = "sadbutsad", needle = "sad" --> 0|}}
+	\item {\colorbox{CodeBackground}{\lstinline|haystack = "leetcode", needle = "leeto" --> -1|}}
+\end{itemize}
+
+\subsection*{Solution 1 - {\colorbox{CodeBackground}{\lstinline|std::string::find()|}}}
+\begin{lstlisting}
+int strStr(std::string haystack, std::string needle) {
+	int pos = haystack.find(needle);
+	if (pos != std::string::npos) {
+		return pos;
+	} else {
+		return -1;
+	}
+}
+\end{lstlisting}
+
+\subsection*{Solution 2}
+\begin{lstlisting}
+int strStr(const std::string& haystack, const std::string& needle) {
+  int n = haystack.size();
+  int m = needle.size();
+  for (int i = 0; i <= n - m; ++i) {
+    if (haystack.substr(i, m) == needle) { return i; }
+  }
+  return -1;
+}
+\end{lstlisting}
+
+\section{LC 0125 - Valid Palindrome}\label{lc0125}
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}}, return {\colorbox{CodeBackground}{\lstinline|true|}} if it is a \ul{palindrome}, or {\colorbox{CodeBackground}{\lstinline|false|}} otherwise.\\
+
+A phrase is a \ul{palindrome} if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists only of \ul{printable ASCII characters}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "A man, a plan, a canal: Panama" --> true|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "race a car" --> false|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = " " --> true|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+bool isPalindrome(std::string s) {
+	auto left = s.begin();
+	auto right = s.end() - 1;
+	while (left < right) {
+		if (!std::isalnum(*left)) {
+			++left;
+			continue;
+		}
+		if (!std::isalnum(*right)) {
+			--right;
+			continue;
+		}
+		if (std::tolower(*left) != std::tolower(*right)) { return false; }
+		++left;
+		--right;
+	}
+	return true;
+}
+\end{lstlisting}
+
+\subsection*{Related - Palindrome}
+\begin{itemize}
+	\item \hyperref[lc0125]{LC 0125 - Valid Palindrome}
+ 	\item \hyperref[lc0680]{LC 0680 - Valid Palindrome II}
+	\item \hyperref[lc0647]{LC 0647 - Palindromic Substrings}
+	\item \hyperref[lc0005]{LC 0005 - Longest Palindromic Substring}
+	\item \hyperref[lc0516]{LC 0516 - Longest Palindromic Subsequence}
+\end{itemize}
+
+\section{LC 0680 - Valid Palindrome II}\label{lc0680}
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}}, return {\colorbox{CodeBackground}{\lstinline|true|}} if the {\colorbox{CodeBackground}{\lstinline|s|}} can be \ul{palindrome} after \ul{deleting at most one character} from it.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists of \ul{lowercase English letters}.
+
+\subsection*{Solution}
+\begin{lstlisting}
+bool validPalindrome(std::string s) {
+  int left = 0;
+  int right = s.size() - 1;
+
+  auto IsPalindrome = [&s](int l, int r) {
+    while (l < r) {
+      if (s[l] != s[r]) { return false; }
+      ++l;
+      --r;
+    }
+    return true;
+  };
+
+  while (left < right) {
+    if (s[left] != s[right]) {
+      return IsPalindrome(left + 1, right) || IsPalindrome(left, right - 1);
+    }
+    ++left;
+    --right;
+  }
+  return true;
+}
+\end{lstlisting}
+
+\subsection*{Related - Palindrome}
+\begin{itemize}
+	\item \hyperref[lc0125]{LC 0125 - Valid Palindrome}
+ 	\item \hyperref[lc0680]{LC 0680 - Valid Palindrome II}
+	\item \hyperref[lc0647]{LC 0647 - Palindromic Substrings}
+	\item \hyperref[lc0005]{LC 0005 - Longest Palindromic Substring}
+	\item \hyperref[lc0516]{LC 0516 - Longest Palindromic Subsequence}
+\end{itemize}
+
+\section{LC 0392 - Is Subsequence}\label{lc0392}
+Given two strings {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}}, return {\colorbox{CodeBackground}{\lstinline|true|}} if {\colorbox{CodeBackground}{\lstinline|s|}} is a \ul{subsequence} of {\colorbox{CodeBackground}{\lstinline|t|}}, or {\colorbox{CodeBackground}{\lstinline|false|}} otherwise.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}} consist only of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "abc", t = "ahbgdc" --> true|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "axc", t = "ahbgdc" --> false|}}
+\end{itemize}
+
+\subsection*{Solution 1}
+\begin{lstlisting}
+bool isSubsequence(std::string s, std::string t) {
+	int i = 0;
+	int j = 0;
+	while (i < s.size() && j < t.size()) {
+		if (s[i] == t[j]) { ++i; }
+		++j;
+	}
+	return i == s.size();
+}
+\end{lstlisting}
+
+\subsection*{Solution 2}
+\begin{lstlisting}
+bool isSubsequence(std::string s, std::string t) {
+  int i = 0;
+  int j = 0;
+  while (i < s.size()) {
+    while (j < t.size() && t[j] != s[i]) { ++j; }
+    if (j == t.size()) { return false; }
+    ++i;
+    ++j;
+  }
+  return true;
+}
+\end{lstlisting}
+
+\subsection*{Related - Subsequence}
+\begin{itemize}
+	\item \hyperref[lc0392]{LC 0392 - Is Subsequence}
+	\item \hyperref[lc1143]{LC 1143 - Longest Common Subsequence}
+	\item \hyperref[lc0300]{LC 0300 - Longest Increasing Subsequence}
+	\item \hyperref[lc0516]{LC 0516 - Longest Palindromic Subsequence}
+\end{itemize}
+
+\section{LC 0014 - Longest Common Prefix}
+Write a function to find the \ul{longest common prefix} string among a \ul{non-empty} array of strings. If there is no common prefix, return an empty string {\colorbox{CodeBackground}{\lstinline|""|}}.\\
+
+{\colorbox{CodeBackground}{\lstinline|strs[i]|}} consists of only \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|strs = ["flower","flow","flight"] --> "fl"|}}
+\item {\colorbox{CodeBackground}{\lstinline|strs = ["dog","racecar","car"] --> ""|}}
+\end{itemize}
+
+\subsection*{Solution 1}
+\begin{lstlisting}
+std::string longestCommonPrefix(std::vector<std::string>& strs) {
+  std::string prefix = strs[0];
+  for (int i = 1; i < strs.size(); ++i) {
+    while (strs[i].find(prefix) != 0) {
+      prefix.erase(prefix.size() - 1);
+      if (prefix.empty()) { return ""; }
+    }
+  }
+  return prefix;
+}
+\end{lstlisting}
+
+\subsection*{Solution 2 - Sort}
+\begin{lstlisting}
+std::string longestCommonPrefix(std::vector<std::string>& strs) {
+  std::sort(begin(strs), end(strs));
+  std::string prefix = "";
+  std::string first = strs.front();
+  std::string last = strs.back();
+  for (int i = 0; i < first.size(); ++i) {
+    if (first[i] == last[i]) {
+      prefix.push_back(first[i]);
+    } else {
+      break;
+    }
+  }
+  return prefix;
+}
+\end{lstlisting}
+
+\section{LC 0058 - Length of Last Word}\label{lc0058}
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}} consisting of words and spaces, return the length of the last word in the string.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists of only \ul{English letters} and \ul{spaces {\colorbox{CodeBackground}{\lstinline|' '|}}}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "Hello World" --> 5|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "   fly me   to   the moon  " --> 4|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "luffy is still joyboy" --> 6|}}
+\end{itemize}
+
+\subsection*{Solution 1 - {\colorbox{CodeBackground}{\lstinline|std::istringstream|}}}
+\begin{lstlisting}
+int lengthOfLastWord(const std::string& s) {
+  std::istringstream iss(s);
+  std::string word;
+  while (iss >> word) {}
+  return word.size();
+}
+\end{lstlisting}
+
+\subsection*{Solution 2 - Two Pointers}
+\begin{lstlisting}
+int lengthOfLastWord(std::string s) {
+	// idx of last char of last word
+	int j = s.size() - 1;
+	while (j >= 0 && s[j] == ' ') { --j; }
+	if (j < 0) { return 0; }
+	// idx of first space before last word
+	int i = j - 1;
+	while (i >= 0 && s[i] != ' ') { --i; }
+	return j - i;
+}
+\end{lstlisting}
+
+\section{LC 0151 - Reverse Words in a String}\label{lc0151}
+Given a \ul{non-empty} input string {\colorbox{CodeBackground}{\lstinline|s|}}, return a string of the words in reverse order concatenated by a single space. \\
+
+Note that {\colorbox{CodeBackground}{\lstinline|s|}} may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} contains \ul{English letters (upper-case and lower-case)}, \ul{digits}, and \ul{spaces {\colorbox{CodeBackground}{\lstinline|' '|}}}, and there is at least one word in {\colorbox{CodeBackground}{\lstinline|s|}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "the sky is blue" --> "blue is sky the"|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "  hello world  " --> "world hello"|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "a good   example" --> "example good a"|}}
+\end{itemize}
+
+\subsection*{Solution 1 - {\colorbox{CodeBackground}{\lstinline|std::istringstream|}}}
+\begin{lstlisting}
+std::string reverseWords(std::string s) {
+  std::stack<std::string> stk;
+  std::istringstream iss(s);
+  std::string word;
+  while (iss >> word) { stk.push(word); }
+  std::string reversed_str;
+  while (!stk.empty()) {
+    reversed_str.append(stk.top());
+    stk.pop();
+    if (!stk.empty()) { reversed_str.append(" "); }
+  }
+  return reversed_str;
+}
+\end{lstlisting}
+
+\subsection*{Solution 2 - Two Pointers}
+\begin{lstlisting}
+std::string reverseWords(std::string s) {
+	std::string reversed_str = "";
+	int j = s.size() - 1;
+	while (j >= 0) {
+		while (j >= 0 && s[j] == ' ') { --j; }
+		if (j < 0) { break; }
+		int i = j - 1;
+		while (i >= 0 && s[i] != ' ') { --i; }
+		reversed_str += s.substr(i + 1, j - i) + " ";
+		j = i - 1;
+	}
+	return reversed_str.substr(0, reversed_str.size() - 1);
+}
+\end{lstlisting}
+
+\section{LC 0383 - Ransom Note}\label{lc0383}
+Given two \ul{non-empty} strings {\colorbox{CodeBackground}{\lstinline|ransomNote|}} and {\colorbox{CodeBackground}{\lstinline|magazine|}}, return {\colorbox{CodeBackground}{\lstinline|true|}} if {\colorbox{CodeBackground}{\lstinline|ransomNote|}} can be constructed by using the letters from {\colorbox{CodeBackground}{\lstinline|magazine|}} and {\colorbox{CodeBackground}{\lstinline|false|}} otherwise. Note that each letter in {\colorbox{CodeBackground}{\lstinline|magazine|}} can only be used once in {\colorbox{CodeBackground}{\lstinline|ransomNote|}}.\\
+
+{\colorbox{CodeBackground}{\lstinline|ransomNote|}} and {\colorbox{CodeBackground}{\lstinline|magazine|}} consist of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|ransomNote = "a", magazine = "b" --> false|}}
+	\item {\colorbox{CodeBackground}{\lstinline|ransomNote = "aa", magazine = "ab" --> false|}}
+	\item {\colorbox{CodeBackground}{\lstinline|ransomNote = "aa", magazine = "aab" --> true|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+bool canConstruct(std::string ransomNote, std::string magazine) {
+  std::unordered_map<char, int> char2cnt;
+  for (char c : magazine) { ++char2cnt[c]; }
+  for (char c : ransomNote) {
+    if (char2cnt[c] <= 0) {
+      return false;
+    } else {
+      --char2cnt[c];
+    }
+  }
+  return true;
+}
+\end{lstlisting}
+
+\section{LC 0205 - Isomorphic Strings}\label{lc0205}
+Given two \ul{non-empty} strings {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}}, determine if they are \ul{isomorphic}.\\
+
+Two strings {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}} are \ul{isomorphic} if the characters in {\colorbox{CodeBackground}{\lstinline|s|}} can be replaced to get {\colorbox{CodeBackground}{\lstinline|t|}}.\\
+
+Note:
+\begin{itemize}
+\item All occurrences of a character must be replaced with another character while preserving the order of characters.
+\item No two characters may map to the same character, but a character may map to itself.
+\item {\colorbox{CodeBackground}{\lstinline|t.size() == s.size()|}}
+\item {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}} consist of any \ul{valid ASCII character}.
+\end{itemize}
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "egg", t = "add" --> true|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "foo", t = "bar" --> false|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "paper", t = "title" --> true|}}
+\end{itemize}
+
+\subsection*{Solution - Bijection}
+\begin{lstlisting}
+bool isIsomorphic(std::string s, std::string t) {
+  std::unordered_map<char, char> s2t;
+  std::unordered_map<char, char> t2s;
+  for (int i = 0; i < s.size(); ++i) {
+    // s -> t
+    if (s2t.find(s[i]) != s2t.end() && s2t[s[i]] != t[i]) { return false; }
+    s2t[s[i]] = t[i];
+    // t -> s
+    if (t2s.find(t[i]) != t2s.end() && t2s[t[i]] != s[i]) { return false; }
+    t2s[t[i]] = s[i];
+  }
+  return true;
+}
+\end{lstlisting}
+
+\section{LC 0290 - Word Pattern}\label{lc0290}
+Given a \ul{non-empty} {\colorbox{CodeBackground}{\lstinline|pattern|}} and a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}}, find if {\colorbox{CodeBackground}{\lstinline|s|}} matches the {\colorbox{CodeBackground}{\lstinline|pattern|}}.\\
+
+A match means that there is a \ul{bijection} between a \ul{letter} in {\colorbox{CodeBackground}{\lstinline|pattern|}} and a \ul{non-empty word} in {\colorbox{CodeBackground}{\lstinline|s|}}.\\
+
+Note that:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|pattern|}} contains only \ul{lower-case English letters}.
+\item {\colorbox{CodeBackground}{\lstinline|s|}} contains only \ul{lowercase English letters} and \ul{spaces {\colorbox{CodeBackground}{\lstinline|' '|}}}.
+\item {\colorbox{CodeBackground}{\lstinline|s|}} does not contain any leading or trailing spaces.
+\item All the words in {\colorbox{CodeBackground}{\lstinline|s|}} are separated by a single space.
+\end{itemize}
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|pattern = "abba", s = "dog cat cat dog" --> true|}}
+	\item {\colorbox{CodeBackground}{\lstinline|pattern = "abba", s = "dog cat cat fish" --> false|}}
+	\item {\colorbox{CodeBackground}{\lstinline|pattern = "aaaa", s = "dog cat cat dog" --> false|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+bool wordPattern(std::string pattern, std::string s) {
+	std::unordered_map<char, std::string> char2word;
+	std::unordered_map<std::string, char> word2char;
+	std::istringstream iss(s);
+	std::string word;
+	for (char c : pattern) {
+		if (!(iss >> word)) { return false; }
+		if (char2word.find(c) != char2word.end() && char2word[c] != word) { return false; }
+		char2word[c] = word;
+		if (word2char.find(word) != word2char.end() && word2char[word] != c) { return false; }
+		word2char[word] = c;
+	}
+	return !(iss >> word);
+}
+\end{lstlisting}
+
+\section{LC 0242 - Valid Anagram}\label{lc0242}
+Given two \ul{non-empty} strings {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}}, return {\colorbox{CodeBackground}{\lstinline|true|}} if {\colorbox{CodeBackground}{\lstinline|t|}} is an \ul{anagram} of {\colorbox{CodeBackground}{\lstinline|s|}}, and {\colorbox{CodeBackground}{\lstinline|false|}} otherwise.\\
+
+An \ul{anagram} is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}} consist of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "anagram", t = "nagaram" --> true|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "rat", t = "car" --> false|}}
+\end{itemize}
+
+\subsection*{Solution 1 - Sort}
+\begin{lstlisting}
+bool isAnagram(std::string s, std::string t) {
+	std::sort(s.begin(), s.end());
+	std::sort(t.begin(), t.end());
+	return s == t;
+}
+\end{lstlisting}
+
+\subsection*{Solution 2 - Hash Map}
+\begin{lstlisting}
+bool isAnagram(std::string s, std::string t) {
+	if (s.length() != t.length()) { return false; }
+	std::unordered_map<char, int> char2count;
+	for (char c : s) { ++char2count[c]; }
+	for (char c : t) {
+		--char2count[c];
+		if (char2count[c] < 0) { return false; }
+	}
+	return true;
+}
+
+\end{lstlisting}
+
+\subsection*{Solution 3 - Array}
+\begin{lstlisting}
+bool isAnagram(std::string s, std::string t) {
+	if (s.length() != t.length()) { return false; }
+	std::vector<int> freq(256, 0);
+	for (char c : s) { ++freq[c]; }
+	for (char c : t) {
+		--freq[c];
+		if (freq[c] < 0) { return false; }
+	}
+	return true;
+}
+\end{lstlisting}
+
+\subsection*{Related - Anagram}
+\begin{itemize}
+\item \hyperref[lc0242]{LC 0242 - Valid Anagram}
+\item \hyperref[lc0049]{LC 0049 - Group Anagrams}
+\item \hyperref[lc0438]{LC 0438 - Find All Anagrams in a String}
+\end{itemize}
+
+\section{LC 0049 - Group Anagrams}\label{lc0049}
+Given an array of strings {\colorbox{CodeBackground}{\lstinline|strs|}} ({\colorbox{CodeBackground}{\lstinline|strs.size() >= 1|}}), group the \ul{anagrams} together. You can return the answer in any order.\\
+
+An \ul{anagram} is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.\\
+
+{\colorbox{CodeBackground}{\lstinline|strs[i]|}} consists of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|strs = ["eat","tea","tan","ate","nat","bat"] --> [["bat"],["nat","tan"],["ate","eat","tea"]]|}}
+	\item {\colorbox{CodeBackground}{\lstinline|strs = [""] --> [[""]]|}}
+	\item {\colorbox{CodeBackground}{\lstinline|strs = ["a"] --> [["a"]]|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+std::vector<std::vector<std::string>> groupAnagrams(std::vector<std::string>& strs) {
+	std::unordered_map<std::string, std::vector<std::string>> key2group;
+	for (std::string& str : strs) {
+		std::string key = str;
+		std::sort(key.begin(), key.end());
+		key2group[key].push_back(str);
+	}
+	std::vector<std::vector<std::string>> result;
+	for (auto& pair : key2group) { result.push_back(pair.second); }
+	return result;
+}
+\end{lstlisting}
+
+\subsection*{Related - Anagram}
+\begin{itemize}
+\item \hyperref[lc0242]{LC 0242 - Valid Anagram}
+\item \hyperref[lc0049]{LC 0049 - Group Anagrams}
+\item \hyperref[lc0438]{LC 0438 - Find All Anagrams in a String}
+\end{itemize}
+
+\section{LC 0647 - Palindromic Substrings}\label{lc0647}
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}}, return the number of \ul{palindromic substrings} in it.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "abc" --> 3|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "aaa" --> 6|}}
+\end{itemize}
+
+\subsection*{Solution - Expand Around Center}
+\begin{lstlisting}
+int countSubstrings(std::string s) {
+	int total_count = 0;
+	for (int i = 0; i < s.length(); i++) {
+		total_count += CountPalindromesAroundCenter(s, i, i);
+		total_count += CountPalindromesAroundCenter(s, i, i + 1);
+	}
+	return total_count;
+}
+
+int CountPalindromesAroundCenter(const std::string& s, int left, int right) {
+	int count = 0;
+	while (left >= 0 && right < s.length() && s[left] == s[right]) {
+		--left;
+		++right;
+		++count;
+	}
+	return count;
+}
+\end{lstlisting}
+
+\subsection*{Related - Palindrome}
+\begin{itemize}
+	\item \hyperref[lc0125]{LC 0125 - Valid Palindrome}
+ 	\item \hyperref[lc0680]{LC 0680 - Valid Palindrome II}
+	\item \hyperref[lc0647]{LC 0647 - Palindromic Substrings}
+	\item \hyperref[lc0005]{LC 0005 - Longest Palindromic Substring}
+	\item \hyperref[lc0516]{LC 0516 - Longest Palindromic Subsequence}
+\end{itemize}
+
+\section{LC 0005 - Longest Palindromic Substring}\label{lc0005}
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}}, return the longest \ul{palindromic substring} in {\colorbox{CodeBackground}{\lstinline|s|}}.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consist of only \ul{digits} and \ul{English letters}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|"babad" --> "bab"\ \ or "aba"|}}
+	\item {\colorbox{CodeBackground}{\lstinline|"cbbd" --> "bb"|}}
+\end{itemize}
+
+\subsection*{Solution - Expand Around Center}\label{solution:lc0005_expand_around_center}
+\begin{lstlisting}
+std::string longestPalindrome(std::string s) {
+	int begin = 0;
+	int max_len = 1;
+	for (int i = 0; i < s.size(); i++) {
+		int odd_len = LengthOfLongestPalindromAroundCenter(s, i, i);
+		int even_len = LengthOfLongestPalindromAroundCenter(s, i, i + 1);
+		int cur_len = std::max(odd_len, even_len);
+		if (cur_len > max_len) {
+			begin = i - (cur_len - 1) / 2;
+			max_len = cur_len;
+		}
+	}
+	return s.substr(begin, max_len);
+}
+
+int LengthOfLongestPalindromAroundCenter(const std::string& s, int left, int right) {
+	while (left >= 0 && right < s.size() && s[left] == s[right]) {
+		left--;
+		right++;
+	}
+	return right - left - 1;
+}
+\end{lstlisting}
+
+\subsection*{Other Solutions}
+\begin{itemize}
+%	\item \hyperref[solution:lc0005_expand_around_center]{Expand Around Center}
+	\item \hyperref[solution:lc0005_dp]{DP}
+\end{itemize}
+
+\subsection*{Related - Palindrome}
+\begin{itemize}
+	\item \hyperref[lc0125]{LC 0125 - Valid Palindrome}
+ 	\item \hyperref[lc0680]{LC 0680 - Valid Palindrome II}
+	\item \hyperref[lc0647]{LC 0647 - Palindromic Substrings}
+	\item \hyperref[lc0005]{LC 0005 - Longest Palindromic Substring}
+	\item \hyperref[lc0516]{LC 0516 - Longest Palindromic Subsequence}
+\end{itemize}
+
+\section{LC 1768 - Merge Strings Alternately}\label{lc1768}
+You are given two \ul{non-empty} strings {\colorbox{CodeBackground}{\lstinline|word1|}} and {\colorbox{CodeBackground}{\lstinline|word2|}}. Merge the strings by adding letters in \ul{alternating order}, starting with {\colorbox{CodeBackground}{\lstinline|word1|}}. If a string is longer than the other, append the additional letters onto the end of the merged string. Return the merged string.\\
+
+{\colorbox{CodeBackground}{\lstinline|word1|}} and {\colorbox{CodeBackground}{\lstinline|word2|}} consist of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|word1 = "abc", word2 = "pqr" --> "apbqcr"|}}
+\item {\colorbox{CodeBackground}{\lstinline|word1 = "ab", word2 = "pqrs" --> "apbqrs"|}}
+\item {\colorbox{CodeBackground}{\lstinline|word1 = "abcd", word2 = "pq" --> "apbqcd"|}}
+\end{itemize}
+
+\subsection*{Solution 1}
+\begin{lstlisting}
+std::string mergeAlternately(std::string word1, std::string word2) {
+  std::string merged;
+  int i = 0;
+  int j = 0;
+  while (i < word1.size() || j < word2.size()) {
+    if (i < word1.size()) { merged += word1[i++]; }
+    if (j < word2.size()) { merged += word2[j++]; }
+  }
+  return merged;
+}
+\end{lstlisting}
+
+\subsection*{Solution 2}
+\begin{lstlisting}
+std::string mergeAlternately(std::string word1, std::string word2) {
+  int m = word1.size();
+  int n = word2.size();
+  int k = std::min(m, n);
+  std::string merged;
+  for (int i = 0; i < k; ++i) {
+    merged += word1[i];
+    merged += word2[i];
+  }
+  if (m > n) {
+    merged += word1.substr(k, m - k + 1);
+  } else if (n > m) {
+    merged += word2.substr(k, n - k + 1);
+  }
+  return merged;
+}
+\end{lstlisting}
+
+\subsection*{Related - Interleaving}
+\begin{itemize}
+\item \hyperref[lc0097]{LC 0097 - Interleaving String}
+\item \hyperref[lc1768]{LC 1768 - Merge Strings Alternately}
+\end{itemize}
+
+\section{LC 0408 - Valid Word Abbreviation}
+A string can be abbreviated by replacing any number of \ul{non-adjacent}, \ul{non-empty} substrings with their lengths. The lengths should not have leading zeros.\\
+
+For example, a string such as {\colorbox{CodeBackground}{\lstinline|"substitution"|}} could be abbreviated as (but not limited to):
+\begin{itemize}
+\item  {\colorbox{CodeBackground}{\lstinline|"s10n"|}} ("s\ul{ubstitutio}n")
+\item  {\colorbox{CodeBackground}{\lstinline|"sub4u4"|}} ("sub\ul{stit}u\ul{tion}")
+\item  {\colorbox{CodeBackground}{\lstinline|"12"|}} ("\ul{substitution}")
+\item  {\colorbox{CodeBackground}{\lstinline|"su3i1u2on"|}} ("su\ul{bst}i\ul{t}u\ul{ti}on")
+\item {\colorbox{CodeBackground}{\lstinline|"substitution"|}} (no substrings replaced)
+\end{itemize}
+
+The following are not valid abbreviations:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|"s55n"|}} (replace adjacent substrings )
+\item {\colorbox{CodeBackground}{\lstinline|"s010n"|}} (replace an empty substring)
+\item {\colorbox{CodeBackground}{\lstinline|"s010n"|}} (leading zeros)
+\end{itemize}
+
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|word|}} and a \ul{non-empty} abbreviation {\colorbox{CodeBackground}{\lstinline|abbr|}}, return whether the string matches the given abbreviation.\\
+
+Note that:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|word|}} consists of only \ul{lowercase English letters}.
+\item {\colorbox{CodeBackground}{\lstinline|abbr|}} consists of \ul{lowercase English letters} and \ul{digits}.
+\end{itemize}
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|word = "internationalization", abbr = "i12iz4n" -- > true|}}
+\item {\colorbox{CodeBackground}{\lstinline|word = "apple", abbr = "a2e" --> false|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+bool validWordAbbreviation(std::string word, std::string abbr) {
+  int i = 0;
+  int j = 0;
+  while (i < word.size() && j < abbr.size()) {
+    if (std::isdigit(abbr[j])) {
+      if (abbr[j] == '0') { return false; }
+      int num = 0;
+      while (j < abbr.size() && std::isdigit(abbr[j])) {
+        num = num * 10 + (abbr[j] - '0');
+        j++;
+      }
+      i += num;
+    } else {
+      if (word[i] != abbr[j]) { return false; }
+      i++;
+      j++;
+    }
+  }
+  return i == word.size() && j == abbr.size();
+}
+\end{lstlisting}
+
+\section{LC 0187 - Find Repeated DNA Sequences Of Given Length}\label{lc0187}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}\\
+\begin{tcolorbox}
+\begin{itemize}
+\item Find \ul{repeated substrings} of \ul{fixed length} in a given \ul{string}.
+\item Find \ul{repeated subarrays} of \ul{fixed length} in a given \ul{array}.
+\end{itemize}
+\end{tcolorbox}
+
+The \ul{DNA sequence} is composed of a series of nucleotides abbreviated as {\colorbox{CodeBackground}{\lstinline|'A'|}}, {\colorbox{CodeBackground}{\lstinline|'C'|}}, {\colorbox{CodeBackground}{\lstinline|'G'|}}, and {\colorbox{CodeBackground}{\lstinline|'T'|}}. For example, {\colorbox{CodeBackground}{\lstinline|"ACGAATTCCG"|}} is a \ul{DNA sequence}.\\
+
+When studying DNA, it is useful to identify \ul{repeated substrings} within the DNA.\\
+
+Given a \ul{non-empty} string s that represents a \ul{DNA sequence}, return all the \ul{{\colorbox{CodeBackground}{\lstinline|10|}}-letter-long sequences (substrings)} that occur more than once in a DNA molecule. You may return the answer in any order.\\
+
+{\colorbox{CodeBackground}{\lstinline|s[i]|}} is either {\colorbox{CodeBackground}{\lstinline|'A'|}}, {\colorbox{CodeBackground}{\lstinline|'C'|}}, {\colorbox{CodeBackground}{\lstinline|'G'|}}, or {\colorbox{CodeBackground}{\lstinline|'T'|}}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT" --> ["AAAAACCCCC","CCCCCAAAAA"]|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "AAAAAAAAAAAAA" --> ["AAAAAAAAAA"]|}}
+\end{itemize}
+
+\subsection*{Solution - Sliding Window of Fixed Length {\scriptsize\color{gray}\Coffeecup\hspace{1mm}Time $O(n)$, Space $O(n)$}}
+\begin{lstlisting}
+std::vector<std::string> findRepeatedDnaSequences(std::string s) {
+  std::vector<std::string> repeated_seqs;
+  if (s.size() < 10) { return repeated_seqs; }
+  std::unordered_map<std::string, int> seq2cnt;
+  for (int i = 0; i <= s.size() - 10; ++i) {
+    std::string seq = s.substr(i, 10);
+    ++seq2cnt[seq];
+  }
+  for (auto& pair : seq2cnt) {
+    if (pair.second > 1) { repeated_seqs.push_back(pair.first); }
+  }
+  return repeated_seqs;
+}
+\end{lstlisting}
+
+\section{LC 0438 - Find All Anagrams in a String}\label{lc0438}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}\\
+
+Given two \ul{non-empty} strings {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|p|}}, return an array of all the \ul{start indices} of \ul{{\colorbox{CodeBackground}{\lstinline|p|}}'s anagrams} in {\colorbox{CodeBackground}{\lstinline|s|}}. You may return the answer in any order.\\
+
+An \ul{anagram} is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|p|}} consist of \ul{lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "cbaebabacd", p = "abc" --> [0,6]|}}\\
+The substring with start index = {\colorbox{CodeBackground}{\lstinline|0|}} is {\colorbox{CodeBackground}{\lstinline|"cba"|}}, which is an anagram of {\colorbox{CodeBackground}{\lstinline|"abc"|}}.\\
+The substring with start index = {\colorbox{CodeBackground}{\lstinline|6|}} is {\colorbox{CodeBackground}{\lstinline|"bac"|}}, which is an anagram of {\colorbox{CodeBackground}{\lstinline|"abc"|}}.
+\item {\colorbox{CodeBackground}{\lstinline|s = "abab", p = "ab" --> [0,1,2]|}}\\
+The substring with start index = {\colorbox{CodeBackground}{\lstinline|0|}} is {\colorbox{CodeBackground}{\lstinline|"ab"|}}, which is an anagram of {\colorbox{CodeBackground}{\lstinline|"ab"|}}.\\
+The substring with start index = {\colorbox{CodeBackground}{\lstinline|1|}} is "ba", which is an anagram of {\colorbox{CodeBackground}{\lstinline|"ab"|}}.\\
+The substring with start index = {\colorbox{CodeBackground}{\lstinline|2|}} is {\colorbox{CodeBackground}{\lstinline|"ab"|}}, which is an anagram of {\colorbox{CodeBackground}{\lstinline|"ab"|}}.
+\end{itemize}
+
+\subsection*{Solution - Sliding Window of Fixed Length {\scriptsize\color{gray}\Coffeecup\hspace{1mm}Time $O(n)$, Space $O(1)$}}
+\begin{lstlisting}
+std::vector<int> findAnagrams(std::string s, std::string p) {
+  int n = s.size();
+  int m = p.size();
+  if (n < m) { return {}; }
+  std::unordered_map<char, int> char2freq_p;
+  std::unordered_map<char, int> char2freq_w;
+  std::vector<int> start_indices;
+  for (char c : p) { ++char2freq_p[c]; }
+  for (int i = 0; i < m; ++i) { ++char2freq_w[s[i]]; }
+  for (int i = 0; i <= n - m; ++i) {
+    if (i > 0) {
+      --char2freq_w[s[i - 1]];
+      if (char2freq_w[s[i - 1]] == 0) { char2freq_w.erase(s[i - 1]); }
+      ++char2freq_w[s[i + m - 1]];
+    }
+    if (char2freq_w == char2freq_p) { start_indices.push_back(i); }
+  }
+  return start_indices;
+}
+\end{lstlisting}
+
+\subsection*{Solution - Sliding Window of Fixed Length, Optimized {\scriptsize\color{gray}\Coffeecup\hspace{1mm}Time $O(n)$, Space $O(1)$}}
+\begin{lstlisting}
+std::vector<int> findAnagrams(std::string s, std::string p) {
+  int n = s.size();
+  int m = p.size();
+  if (n < m) { return {}; }
+  std::vector<int> char_offset2freq_p(26, 0);
+  std::vector<int> char_offset2freq_s(26, 0);
+  std::vector<int> starting_indices;
+  for (char c : p) { ++char_offset2freq_p[c - 'a']; }
+  for (int i = 0; i < m; ++i) { ++char_offset2freq_s[s[i] - 'a']; }
+  for (int i = 0; i <= n - m; ++i) {
+    if (i > 0) {
+      ++char_offset2freq_s[s[i + m - 1] - 'a'];
+      --char_offset2freq_s[s[i - 1] - 'a'];
+    }
+    if (char_offset2freq_s == char_offset2freq_p) { starting_indices.push_back(i); }
+  }
+  return starting_indices;
+}
+\end{lstlisting}
+
+\subsection*{Related - Anagram}
+\begin{itemize}
+\item \hyperref[lc0242]{LC 0242 - Valid Anagram}
+\item \hyperref[lc0049]{LC 0049 - Group Anagrams}
+\item \hyperref[lc0438]{LC 0438 - Find All Anagrams in a String}
+\end{itemize}
+
+
+\section{LC 0003 - Longest Substring Without Repeating Characters}\label{lc0003}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}
+
+\begin{tcolorbox}
+\begin{itemize}
+\item Find the \ul{longest substring without repeating characters} in a given \ul{string}.
+\item Find the \ul{longest subarray without repeating elements} in a given \ul{array}.
+\end{itemize}
+\end{tcolorbox}
+
+Given a string {\colorbox{CodeBackground}{\lstinline|s|}}, find the length of the \ul{longest substring without repeating characters}. \\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists of \ul{English letters}, \ul{digits}, \ul{symbols} and \ul{spaces}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "abcabcbb" --> 3 ("abc")|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "bbbbb" --> 1 ("b")|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "pwwkew" --> 3 ("wke")|}}
+\end{itemize}
+
+\subsection*{Solution 1 - Sliding Window + Hash Set {\scriptsize\color{gray}\Coffeecup\hspace{1mm}Time $O(n)$, Space $O(w)$}}
+\begin{lstlisting}
+int lengthOfLongestSubstring(std::string s) {
+  std::unordered_set<char> seen;
+  int max_len = 0;
+  int left = 0;
+  for (int right = 0; right < s.size(); ++right) {
+    char c = s[right];
+    while (seen.find(c) != seen.end()) { seen.erase(s[left++]); }
+    seen.insert(c);
+    max_len = std::max(max_len, right - left + 1);
+  }
+  return max_len;
+}
+\end{lstlisting}
+
+\subsection*{Solution - Sliding Window + Hash Map {\scriptsize\color{gray}\Coffeecup\hspace{1mm}Time $O(n)$, Space $O(w)$}}
+\begin{lstlisting}
+int lengthOfLongestSubstring(std::string s) {
+  std::unordered_map<char, int> char2latest_idx;
+  int max_len = 0;
+  int left = 0;
+  for (int right = 0; right < s.size(); ++right) {
+    char c = s[right];
+    if (char2latest_idx.find(c) != char2latest_idx.end() && char2latest_idx[c] >= left) {
+      left = char2latest_idx[c] + 1;
+    }
+    char2latest_idx[c] = right;
+    max_len = std::max(max_len, right - left + 1);
+  }
+  return max_len;
+}
+\end{lstlisting}
+
+\section{LC 0340 - Longest Substring with At Most K Distinct Characters}\label{lc0340}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}\\
+
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}} and an integer {\colorbox{CodeBackground}{\lstinline|k|}} ({\colorbox{CodeBackground}{\lstinline|k >= 0|}}), return the length of the longest substring of {\colorbox{CodeBackground}{\lstinline|s|}} that contains at most {\colorbox{CodeBackground}{\lstinline|k|}} distinct characters.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "eceba", k = 2 --> 3 ("ece")|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "aa", k = 1 --> 2 ("aa")|}}
+\end{itemize}
+
+\subsection*{Solution - Sliding Window + Hash Map {\scriptsize\color{gray}\Coffeecup\hspace{1mm}Time $O(n)$, Space $O(w)$}}
+\begin{lstlisting}
+int lengthOfLongestSubstringKDistinct(std::string s, int k) {
+  std::unordered_map<char, int> char2cnt;
+  int max_len = 0;
+  int left = 0;
+  for (int right = 0; right < s.size(); ++right) {
+    ++char2cnt[s[right]];
+    while (char2cnt.size() > k) {
+      --char2cnt[s[left]];
+      if (char2cnt[s[left]] == 0) { char2cnt.erase(s[left]); }
+      ++left;
+    }
+    max_len = std::max(max_len, right - left + 1);
+  }
+  return max_len;
+}
+\end{lstlisting}
+
+\subsection*{Related}
+\begin{itemize}
+\item \hyperref[lc0340]{LC 0340 - Longest Substring with At Most K Distinct Characters}
+\item \hyperref[lc0395]{LC 0395 - Longest Substring with At Least K Repeating Characters}
+\end{itemize}
+
+\section{LC 0424 - Longest Substring Of Same Characters After Replacement}\label{lc0424}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}\\
+
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}} and an integer {\colorbox{CodeBackground}{\lstinline|k|}} ({\colorbox{CodeBackground}{\lstinline|k >= 0|}}), you can choose any character of the string and change it to any other character at most {\colorbox{CodeBackground}{\lstinline|k|}} times. Return the length of the longest substring containing the same letter you can get after performing the above operations.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists of only \ul{uppercase English letters}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "ABAB", k = 2 --> 4 ("AAAA" or "BBBB")|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "AABABBA", k = 1 --> 4 ("AABBBBA")|}}
+\end{itemize}
+
+\subsection*{Solution - Sliding Window}
+We maintain a window that can contain at most {\colorbox{CodeBackground}{\lstinline|k|}} characters that are different from \ul{the most frequent character} in that window.
+\begin{lstlisting}
+int characterReplacement(std::string s, int k) {
+  std::unordered_map<char, int> char2freq;
+  int most_freq = 0;
+  int max_len = 0;
+  int left = 0;
+  for (int right = 0; right < s.size(); ++right) {
+    ++char2freq[s[right]];
+    most_freq = std::max(most_freq, char2freq[s[right]]);
+    if (right - left + 1 - most_freq > k) {
+      --char2freq[s[left]];
+      ++left;
+    }
+    max_len = std::max(max_len, right - left + 1);
+  }
+  return max_len;
+}
+\end{lstlisting}
+
+\section{LC 0076 - Minimum Window Substring}\label{lc0076}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}\\
+
+Given two strings {\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}} of lengths {\colorbox{CodeBackground}{\lstinline|m|}} ({\colorbox{CodeBackground}{\lstinline|m >= 1|}}) and {\colorbox{CodeBackground}{\lstinline|n|}} ({\colorbox{CodeBackground}{\lstinline|n >= 1|}}) respectively, return the \ul{minimum window 
+substring} of {\colorbox{CodeBackground}{\lstinline|s|}} such that every character in {\colorbox{CodeBackground}{\lstinline|t|}} (including duplicates) is included in the \ul{window}. If there is no such substring, return the empty string {\colorbox{CodeBackground}{\lstinline|""|}}.\\
+
+The testcases will be generated such that the answer is unique.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|t|}} consist of \ul{uppercase and lowercase English letters}.\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "ADOBECODEBANC", t = "ABC" --> "BANC"|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "a", t = "a" --> "a"|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "a", t = "aa" --> ""|}}
+\end{itemize}
+
+\subsection*{Solution - Sliding Window}
+\begin{lstlisting}
+std::string minWindow(std::string s, std::string t) {
+  if (s.size() < t.size()) { return ""; }
+  std::vector<int> char2freq(128, 0);
+  for (char c : t) { ++char2freq[c]; }
+  int start = 0;
+  int len = std::numeric_limits<int>::max();
+  int left = 0;
+  int right = 0;
+  int required = t.size();
+  while (right < s.size()) {
+    if (char2freq[s[right]] > 0) { --required; }
+    --char2freq[s[right]];
+    ++right;
+    // find a valid window
+    while (required == 0) {
+      if (right - left < len) {
+        start = left;
+        len = right - left;
+      }
+      ++char2freq[s[left]];
+      if (char2freq[s[left]] > 0) { required++; }
+      left++;
+    }
+  }
+  return len == std::numeric_limits<int>::max() ? "" : s.substr(start, len);
+}
+\end{lstlisting}
+
+\section{LC 0030 - Substring with Concatenation of All Words}\label{lc0030}
+{\hyperref[sec:sliding_window]{[Sliding Window]}}\\
+
+You are given a string {\colorbox{CodeBackground}{\lstinline|s|}} and an array of strings {\colorbox{CodeBackground}{\lstinline|words|}}. All the strings of {\colorbox{CodeBackground}{\lstinline|words|}} are of the same length.\\
+
+A \ul{concatenated substring} in {\colorbox{CodeBackground}{\lstinline|s|}} is a substring that contains all the strings of any permutation of {\colorbox{CodeBackground}{\lstinline|words|}} concatenated. For example, if {\colorbox{CodeBackground}{\lstinline|words = ["ab","cd","ef"]|}}, then {\colorbox{CodeBackground}{\lstinline|"abcdef"|}}, {\colorbox{CodeBackground}{\lstinline|"abefcd"|}}, {\colorbox{CodeBackground}{\lstinline|"cdabef"|}}, {\colorbox{CodeBackground}{\lstinline|"cdefab"|}}, {\colorbox{CodeBackground}{\lstinline|"efabcd"|}}, and {\colorbox{CodeBackground}{\lstinline|"efcdab"|}} are all \ul{concatenated strings}. {\colorbox{CodeBackground}{\lstinline|"acdbef"|}} is not a concatenated substring because it is not the concatenation of any permutation of words.\\
+
+Return the starting indices of all the \ul{concatenated substrings} in {\colorbox{CodeBackground}{\lstinline|s|}}. You can return the answer in any order.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} and {\colorbox{CodeBackground}{\lstinline|words[i]|}} consist of \ul{lowercase English letters}.
+
+\section{LC 0006 - Zigzag Conversion}
+The string {\colorbox{CodeBackground}{\lstinline|"PAYPALISHIRING"|}} is written in a zigzag pattern on a given number of rows like this:
+\begin{lstlisting}
+P		A		H		N
+A	P	L	S	I	I	G
+Y		I		R
+\end{lstlisting}
+And then read line by line: {\colorbox{CodeBackground}{\lstinline|"PAHNAPLSIIGYIR"|}}.\\
+
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}} and a number of rows {\colorbox{CodeBackground}{\lstinline|numRows|}} ({\colorbox{CodeBackground}{\lstinline|numRows >= 1|}}), write the code to make this conversion.\\
+
+{\colorbox{CodeBackground}{\lstinline|s|}} consists of \ul{English letters (lower-case and upper-case)}, \ul{{\colorbox{CodeBackground}{\lstinline|','|}}} and \ul{{\colorbox{CodeBackground}{\lstinline|'.'|}}}.\\
+
+Examples:
+\begin{itemize}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "PAYPALISHIRING", numRows = 3 --> "PAHNAPLSIIGYIR"|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "PAYPALISHIRING", numRows = 4 --> "PINALSIGYAHRPI"|}}
+	\item {\colorbox{CodeBackground}{\lstinline|s = "A", numRows = 1 --> "A"|}}
+\end{itemize}
+
+\subsection*{Solution}
+\begin{lstlisting}
+std::string convert(std::string s, int numRows) {
+	if (numRows == 1) { return s; }
+	std::vector<std::string> rows(std::min(numRows, int(s.size())));
+	int cur_row = 0;
+	bool go_down = false;
+	for (char c : s) {
+		rows[cur_row] += c;
+		if (cur_row == 0 || cur_row == numRows - 1) { go_down = !go_down; }
+		cur_row += go_down ? 1 : -1;
+	}
+	std::string converted;
+	for (std::string row : rows) { converted += row; }
+	return converted;
+}
+\end{lstlisting}
+
+\section{LC 2038 - Remove Colored Pieces if Both Neighbors are the Same Color}
+There are {\colorbox{CodeBackground}{\lstinline|n|}} pieces arranged in a line, and each piece is colored either by {\colorbox{CodeBackground}{\lstinline|'A'|}} or by {\colorbox{CodeBackground}{\lstinline|'B'|}}. \\
+
+You are given a string {\colorbox{CodeBackground}{\lstinline|colors|}} of length {\colorbox{CodeBackground}{\lstinline|n|}} where {\colorbox{CodeBackground}{\lstinline|colors[i]|}} is the color of the {\colorbox{CodeBackground}{\lstinline|i|}}th piece.\\
+
+Alice and Bob are playing a game where they take \ul{alternating turns} removing pieces from the line. In this game, \ul{Alice moves first}.
+
+\begin{itemize}
+\item Alice is only allowed to remove a piece colored {\colorbox{CodeBackground}{\lstinline|'A'|}} if both its neighbors are also colored {\colorbox{CodeBackground}{\lstinline|'A'|}}. She is not allowed to remove pieces that are colored {\colorbox{CodeBackground}{\lstinline|'B'|}}.
+\item Bob is only allowed to remove a piece colored {\colorbox{CodeBackground}{\lstinline|'B'|}} if both its neighbors are also colored {\colorbox{CodeBackground}{\lstinline|'B'|}}. He is not allowed to remove pieces that are colored {\colorbox{CodeBackground}{\lstinline|'A'|}}.
+\item Alice and Bob cannot remove pieces from the edge of the line.
+\item If a player cannot make a move on their turn, that player loses and the other player wins.
+\end{itemize}
+Assuming \ul{Alice and Bob play optimally}, return {\colorbox{CodeBackground}{\lstinline|true|}} if Alice wins, or return {\colorbox{CodeBackground}{\lstinline|false|}} if Bob wins.\\
+
+{\colorbox{CodeBackground}{\lstinline|colors|}} consists of only the letters {\colorbox{CodeBackground}{\lstinline|'A'|}} and {\colorbox{CodeBackground}{\lstinline|'B'|}}\\
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|colors = "AAABABB" --> true|}}\\
+A\ul{A}ABABB $\rightarrow$ AABABB\\
+Alice moves first.\\
+She removes the second {\colorbox{CodeBackground}{\lstinline|'A'|}} from the left since that is the only {\colorbox{CodeBackground}{\lstinline|'A'|}} whose neighbors are both {\colorbox{CodeBackground}{\lstinline|'A'|}}.\\
+
+Now it's Bob's turn.\\
+Bob cannot make a move on his turn since there are no {\colorbox{CodeBackground}{\lstinline|'B'|}}s whose neighbors are both {\colorbox{CodeBackground}{\lstinline|'B'|}}.
+Thus, Alice wins, so return {\colorbox{CodeBackground}{\lstinline|true|}}.
+\item {\colorbox{CodeBackground}{\lstinline|colors = "AA" --> false|}}\\
+Alice has her turn first.\\
+There are only two {\colorbox{CodeBackground}{\lstinline|'A'|}}s and both are on the edge of the line, so she cannot move on her turn.\\
+
+Thus, Bob wins, so return {\colorbox{CodeBackground}{\lstinline|false|}}.
+\item {\colorbox{CodeBackground}{\lstinline|colors = "ABBBBBBBAAA" --> false|}}\\
+ABBBBBBBA\ul{A}A $\rightarrow$ ABBBBBBBAA\\
+Alice moves first.\\
+Her only option is to remove the second to last {\colorbox{CodeBackground}{\lstinline|'A'|}} from the right.\\
+
+ABBBB\ul{B}BBAA $\rightarrow$ ABBBBBBAA\\
+Next is Bob's turn.\\
+He has many options for which {\colorbox{CodeBackground}{\lstinline|'B'|}} piece to remove. He can pick any.\\
+
+On Alice's second turn, she has no more pieces that she can remove.\\
+Thus, Bob wins, so return {\colorbox{CodeBackground}{\lstinline|false|}}.
+\end{itemize}
+
+\subsection*{Solution}
+\begin{enumerate}
+\item Count the number of sequences where {\colorbox{CodeBackground}{\lstinline|'A'|}} is surrounded by {\colorbox{CodeBackground}{\lstinline|'A'|}}s and {\colorbox{CodeBackground}{\lstinline|'B'|}} is surrounded by {\colorbox{CodeBackground}{\lstinline|'B'|}}s.
+\item Compare the counts of possible removals for Alice and Bob.
+\item If Alice has more or the same number of possible removals than Bob, she will win because she goes first. Otherwise, Bob will win.
+\end{enumerate}
+\begin{lstlisting}
+bool winnerOfGame(std::string colors) {
+  int alice_removals = 0;
+  int bob_removals = 0;
+  for (int i = 1; i < colors.size() - 1; ++i) {
+    if (colors[i - 1] == colors[i] && colors[i] == colors[i + 1]) {
+      if (colors[i] == 'A')
+        alice_removals++;
+      else
+        bob_removals++;
+    }
+  }
+  return alice_removals > bob_removals;
+}
+\end{lstlisting}
+
+\section{LC 0395 - Longest Substring with At Least K Repeating Characters}\label{lc0395}
+{\hyperref[sec:divide_and_conquer]{[Divide and Conquer]}}\\
+
+Given a \ul{non-empty} string {\colorbox{CodeBackground}{\lstinline|s|}} and an integer {\colorbox{CodeBackground}{\lstinline|k|}} ({\colorbox{CodeBackground}{\lstinline|k >= 1|}}), return the length of the longest substring of {\colorbox{CodeBackground}{\lstinline|s|}} such that the frequency of each character in this substring is more than or equal to {\colorbox{CodeBackground}{\lstinline|k|}}. If no such substring exists, return {\colorbox{CodeBackground}{\lstinline|0|}}.
+
+\subsection*{Solution}
+\begin{lstlisting}
+int longestSubstring(std::string s, int k) {
+  return LongestSubstrRecursive(s, 0, s.size(), k);
+}
+
+int LongestSubstrRecursive(const std::string &s, int start, int end, int k) {
+  if (end < k) { return 0; }
+  std::unordered_map<char, int> char2cnt;
+  for (int i = start; i < end; ++i) { ++char2cnt[s[i]]; }
+  for (int i = start; i < end; ++i) {
+    if (char2cnt[s[i]] < k) {
+      int j = i + 1;
+      while (j < end && char2cnt[s[j]] < k) { ++j; }
+      return std::max(LongestSubstrRecursive(s, start, i, k),
+                      LongestSubstrRecursive(s, j, end, k));
+    }
+  }
+  return end - start;
+}
+\end{lstlisting}
+
+Examples:
+\begin{itemize}
+\item {\colorbox{CodeBackground}{\lstinline|s = "aaabb", k = 3 --> 3 ("aaa")|}}
+\item {\colorbox{CodeBackground}{\lstinline|s = "ababbc", k = 2 --> 5 ("ababb")|}}
+\end{itemize}
+
+\subsection*{Related}
+\begin{itemize}
+\item \hyperref[lc0340]{LC 0340 - Longest Substring with At Most K Distinct Characters}
+\item \hyperref[lc0395]{LC 0395 - Longest Substring with At Least K Repeating Characters}
+\end{itemize}

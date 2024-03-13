@@ -1,0 +1,194 @@
+\chapter{Minor Tags}
+
+\section{Interval \& Range}\label{sec:interval_range}
+\subsection{Thinking in Sorting Intervals}
+In problems involving overlaps or intervals, it's common to sort the intervals first. You can sort intervals by either their starts or ends:
+\begin{itemize}
+\item Sorting by starts facilitates the {\color{blue}{early identification and management of overlaps}} as we iterate the sorted intervals. When intervals are sorted by their start points, it becomes straightforward to compare the end point of one interval with the start point of the next as we iterate through the sorted intervals.
+\item Sorting by ends {\color{blue}{avoids overlapping as much as possible}} as we iterate the sorted intervals. {\color{blue}{If an overlap does occur, it means there is no way to avoid it by changing the order or intervals.}}
+\end{itemize}
+It should be noted that, with a given set of intervals, the intervals themselves and any overlaps are predetermined. Our discussion focuses on the dynamics that occur as we sequentially iterate through these intervals.\\
+
+Typical scenarios to {\color{blue}{sort by starts}}:
+\begin{itemize}
+\item {\color{blue}{Detecting Overlaps}}
+\item {\color{blue}{Merging Intervals}}
+\item {\color{blue}{Calculating Intersections}}
+\end{itemize}
+
+Typical scenarios to {\color{blue}{sort by ends}}:
+\begin{itemize}
+\item {\color{blue}{Minimizing Overlap}}
+\item {\color{blue}{Maximizing Interval Count}}
+\end{itemize}
+
+\subsection{\hyperref[lc0057]{LC 0057 - Insert Interval}}
+\subsection{\hyperref[lc0986]{LC 0986 - Intersections of Interval Lists}}
+\subsection{\hyperref[lc0056]{LC 0056 - Merge Intervals}}
+\subsection{\hyperref[lc0495]{LC 0056 - Teemo Attackin}}
+\subsection{\hyperref[lc0616]{LC 0616 - Add Bold Tag in String}}
+\subsection{\hyperref[lc0252]{LC 0252 - Meeting Rooms}}
+\subsection{\hyperref[lc0253]{LC 0253 - Meeting Rooms II}}
+\subsection{\hyperref[lc0435]{LC 0435 - Remove Minimum Intervals to Avoid Overlapping}}
+\subsection{\hyperref[lc0452]{LC 0452 - Minimum Number of Arrows to Burst Balloons}}
+
+\section{Prefix/Suffix Sum}\label{sec:prefix_sum}
+\subsection{Thinking in Prefix Sum}
+Given a vector {\colorbox{CodeBackground}{\lstinline|nums|}}, there are two ways to construct the {\color{blue}{prefix sum vector}}:
+\begin{lstlisting}
+std::vector<int> nums = {-2, 0, 3, -5, 2, -1};
+
+// method 1: size n + 1
+std::vector<int> prefix_sum1(nums.size() + 1, 0);
+for (int i = 0; i < nums.size(); ++i) { prefix_sum1[i + 1] = prefix_sum1[i] + nums[i]; }
+
+// method 2: size n
+std::vector<int> prefix_sum2(nums.size(), 0);
+for (int i = 0; i < nums.size(); ++i) {
+  prefix_sum2[i] = (i == 0 ? 0 : prefix_sum2[i - 1]) + nums[i];
+}
+\end{lstlisting}
+Method 1 creates a {\color{blue}{prefix sum vector}} of size {\colorbox{CodeBackground}{\lstinline|n + 1|}}, with an {\color{blue}{initial state}} ({\colorbox{CodeBackground}{\lstinline|0|}} for sum operation) at the beginning. When you calculate the prefix sum from {\colorbox{CodeBackground}{\lstinline|nums[0]|}} to {\colorbox{CodeBackground}{\lstinline|nums[i]|}}, you need to call {\colorbox{CodeBackground}{\lstinline|prefix_sum[i + 1]|}}.\\
+
+Method 2 is more intuitive, but sometimes it needs treat {\colorbox{CodeBackground}{\lstinline|i == 0|}} as an edge case.\\
+
+I would recommend method 1 to avoid edge cases.
+
+\subsection{Thinking in Suffix Sum}
+Given a vector {\colorbox{CodeBackground}{\lstinline|nums|}}, there are two ways to construct the {\color{blue}{suffix sum vector}}:
+\begin{lstlisting}
+std::vector<int> nums = {-2, 0, 3, -5, 2, -1};
+
+// method 1: size n + 1
+std::vector<int> suffix_sum1(nums.size() + 1, 0);
+for (int i = nums.size() - 1; i >= 0; --i) {
+  suffix_sum1[i] = suffix_sum1[i + 1] + nums[i];
+}
+
+// method 2: size n
+std::vector<int> suffix_sum2(nums.size(), 0);
+for (int i = nums.size() - 1; i >= 0; --i) {
+  suffix_sum2[i] = (i == nums.size() - 1 ? 0 : suffix_sum2[i + 1]) + nums[i];
+}
+\end{lstlisting}
+Method 1 creates a {\color{blue}{suffix sum vector}} of size {\colorbox{CodeBackground}{\lstinline|n + 1|}}, with an {\color{blue}{initial state}} ({\colorbox{CodeBackground}{\lstinline|0|}} for sum operation) at the end. When you calculate the suffix sum from {\colorbox{CodeBackground}{\lstinline|nums[i]|}} to {\colorbox{CodeBackground}{\lstinline|nums[n - 1]|}}, you just need to call {\colorbox{CodeBackground}{\lstinline|suffix_sum[i]|}} because the initial state is at the end.\\
+
+Method 2 is more intuitive, but sometimes it needs treat {\colorbox{CodeBackground}{\lstinline|i == n - 1|}} as an edge case.\\
+
+I would recommend method 1 to avoid edge cases.
+
+\subsection{\hyperref[lc0303]{LC 0303 - Range Sum Query - Immutable}}
+\subsection{\hyperref[lc0304]{LC 0304 - Range Sum Query 2D - Immutable}}
+\subsection{\hyperref[lc0238]{LC 0238 - Product of Array Except Self}}
+\subsection{\hyperref[lc0560]{LC 0560 - Subarray Sum Equals Target}}
+\subsection{\hyperref[lc0523]{LC 0523 - Subarray Sum is Multiple of Target}}
+\subsection{\hyperref[lc0525]{LC 0525 - Binary Subarray with Equal Zeros and Ones}}
+\subsection{\hyperref[lc2017]{LC 2017 - Grid Game}}
+
+\section{Sliding Window}\label{sec:sliding_window}
+\subsection{Thinking in Sliding Window}
+The general strategy of {\color{blue}{sliding window}} technique:
+\begin{enumerate}
+\item Initiate a {\color{blue}{sliding window}} to traverse the input data, such as an {\color{blue}{array}}, {\color{blue}{string}}, or {\color{blue}{linked list}}.
+\item Maintain associated {\color{blue}{state information}}, for instance, utilizing a {\color{blue}{hash set}} or {\color{blue}{hash map}}, to efficiently manage and update the characteristics of the current window's contents.
+\end{enumerate}
+
+\subsubsection{Indexing of Sliding Window}
+\begin{itemize}
+\item Given a sliding window of size \colorbox{CodeBackground}{\lstinline|k|}, if the left boundary is at position \colorbox{CodeBackground}{\lstinline|i|}, then the right boundary is at \colorbox{CodeBackground}{\lstinline|i + (k - 1)|}.
+\item Given a sliding window of size \colorbox{CodeBackground}{\lstinline|k|}, if the right boundary is at position \colorbox{CodeBackground}{\lstinline|j|}, then the left boundary is at \colorbox{CodeBackground}{\lstinline|j - (k - 1)|}.
+\end{itemize}
+
+\subsubsection{Sliding Window with Fixed Size}
+If the sliding window has a {\color{blue}{fixed size}}, you can use a single pointer—either on the left or the right side of the window—to represent the sliding window, rather than using two pointers.\\
+
+Use the {\color{blue}{left side}} (assume the array size is {\colorbox{CodeBackground}{\lstinline|n|}} and the window size is {\colorbox{CodeBackground}{\lstinline|w|}}):
+\begin{lstlisting}
+for (int i = 0; i < w; ++i) {
+  /*
+    initialize the leftmost window
+  */
+}
+for (int i = 0; i <= n - w; ++i) {
+  if (i == 0) {
+    /*
+      for the leftmost window
+    */
+  }
+  if (i > 0) {
+    /*
+      for all windows except the leftmost one
+    */
+  }
+
+  /*
+    for all windows
+  */
+}
+\end{lstlisting}
+
+Use the {\color{blue}{right side}} (assume the array size is {\colorbox{CodeBackground}{\lstinline|n|}} and the window size is {\colorbox{CodeBackground}{\lstinline|w|}}):
+\begin{lstlisting}
+for (int i = 0; i < n; ++i) {
+  if (i <= w) {
+    /*
+      for the leftmost window (note that the leftmost window may not be completely
+      initialized yet)
+    */
+  }
+  if (i > w) {
+    /*
+      for all windows except the leftmost one
+    */
+  }
+
+  /*
+    for all windows (note that the leftmost window may not be completely initialized yet)
+  */
+}
+\end{lstlisting}
+
+\subsubsection{Sliding Window with Variable Size}
+If the sliding window has a {\color{blue}{variable size}}, we use two pointers to represent the sliding window.
+\begin{lstlisting}
+State window_state;
+int left = 0;
+for (int right = 0; right < n; ++right) {
+  /* 1. expand window */
+  // update window_state
+
+  /* 2. shrink window */
+  while (window needs shrink) {
+    // update window_state
+    ++left;
+  }
+
+  /* 3. got the next window that meets the requirements */
+}
+\end{lstlisting}
+
+\subsection{\hyperref[lc0187]{LC 0187 - Find Repeated DNA Sequences Of Given Length}}
+\subsection{\hyperref[lc0219]{LC 0219 - Contains Duplicate II}}
+\subsection{\hyperref[lc0438]{LC 0438 - Find All Anagrams in a String}}
+\subsection{\hyperref[lc0209]{LC 0209 - Shortest Subarray Sum Greater or Equal to Target}}
+\subsection{\hyperref[lc1658]{LC 1658 - Minimum Operations to Reduce X to Zero}}
+\subsection{\hyperref[lc0003]{LC 0003 - Longest Substring Without Repeating Characters}}
+\subsection{\hyperref[lc0340]{LC 0340 - Longest Substring with At Most K Distinct Characters}}
+\subsection{\hyperref[lc1838]{LC 1838 - Frequency of the Most Frequent Element after Increment}}
+\subsection{\hyperref[lc0424]{LC 0424 - Longest Substring Of Same Characters After Replacement}}
+\subsection{\hyperref[lc0239]{LC 0239 - Sliding Window Maximum}}
+\subsection{\hyperref[lc0480]{LC 0480 - Sliding Window Median}}
+\subsection{\hyperref[lc0076]{LC 0076 - Minimum Window Substring}}
+\subsection{\hyperref[lc0030]{LC 0030 - Substring with Concatenation of All Words}}
+
+\section{Topological Sort}\label{sec:topological_sort}
+\subsection{\hyperref[lc0207]{LC 0207 - Course Schedule}}
+\subsection{\hyperref[lc0210]{LC 0210 - Course Schedule II}}
+\subsection{\hyperref[lc0630]{LC 0630 - Course Schedule III}}
+\subsection{\hyperref[lc1136]{LC 1136 - Parallel Courses}}
+\subsection{\hyperref[lc1494]{LC 1494 - Parallel Courses II}}
+\subsection{\hyperref[lc2050]{LC 2050 - Parallel Courses III}}
+\subsection{\hyperref[lc2115]{LC 2115 - Find All Possible Recipes from Given Supplies}}
+
+\section{Divide and Conquer}\label{sec:divide_and_conquer}
+\subsection{\hyperref[lc0395]{LC 0395 - Longest Substring with At Least K Repeating Characters}}
